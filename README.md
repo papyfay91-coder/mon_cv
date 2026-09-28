@@ -18,7 +18,7 @@ Développeur fullstack en CDI à La Poste depuis janvier 2026, après un stage f
 ### Expérience
 
 **Développeur Fullstack – CDI** · La Poste, Dakar · *08 janvier 2026 – aujourd'hui*
-Titularisation en CDI au sein de la DSI, département Génie logiciel. Développement et évolution des applications web et mobiles de La Poste (voir projets ci-dessous) avec Angular et Spring Boot / Java : conception de nouvelles fonctionnalités, intégration et sécurisation d'API (Keycloak), optimisation des performances, maintenance corrective et collaboration avec les équipes métier en méthode agile.
+Titularisation en CDI au sein de la DSI, département Génie logiciel. Développement et évolution des applications métier utilisées par les agents de La Poste et de l'application client de livraison JotNaci (voir projets ci-dessous), avec Angular et Spring Boot / Java : conception de nouvelles fonctionnalités, intégration et sécurisation d'API (Keycloak), optimisation des performances, maintenance corrective et collaboration avec les équipes métier en méthode agile.
 
 **Développeur Fullstack – CDD** · La Poste, Dakar · *janvier 2025 – janvier 2026*
 Développement d'applications web internes pour La Poste sur plusieurs projets, dont DigitalPosteV2, avec Angular et Spring Boot / Java. Intégration d'API, optimisation des performances, correction de bugs et collaboration avec des équipes pluridisciplinaires.
@@ -37,7 +37,8 @@ Développement d'interfaces web avec Angular, traduction des besoins métier en 
 Java / Spring Boot · Angular / TypeScript · React Native · HTML / CSS / JavaScript · MySQL / PostgreSQL / Oracle · Git / GitHub / GitLab · Azure DevOps · Postman / Swagger · Docker · Keycloak
 
 ### Projets à La Poste
-DigitalPosteV2 · JotNaci (web) · JotNaci Mobile · Digital EMS · Courrier · E-commerce · Gestion de stock
+- **Applications des agents de La Poste** : DigitalPosteV2 · Digital EMS · Courrier · E-commerce · Gestion de stock
+- **JotNaci – livraison à la demande** : JotNaci (web) · JotNaci Mobile (appli clients)
 
 ### Langues
 Français (maternelle) · Wolof (maternelle) · Anglais (intermédiaire)
