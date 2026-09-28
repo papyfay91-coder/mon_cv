@@ -18,7 +18,7 @@ Développeur fullstack en CDI à La Poste depuis janvier 2026, après un stage f
 ### Expérience
 
 **Développeur Fullstack – CDI** · La Poste, Dakar · *08 janvier 2026 – aujourd'hui*
-Titularisation en CDI au sein de l'équipe DigitalPosteV2. Développement et évolution des applications web internes de La Poste avec Angular (front-end) et Spring Boot / Java (back-end) : conception de nouvelles fonctionnalités, intégration et sécurisation d'API (Keycloak), optimisation des performances, maintenance corrective et collaboration avec les équipes métier en méthode agile.
+Titularisation en CDI au sein de la DSI, département Génie logiciel, sur le projet DigitalPosteV2. Développement et évolution des applications web internes de La Poste avec Angular (front-end) et Spring Boot / Java (back-end) : conception de nouvelles fonctionnalités, intégration et sécurisation d'API (Keycloak), optimisation des performances, maintenance corrective et collaboration avec les équipes métier en méthode agile.
 
 **Développeur Fullstack – CDD** · La Poste, Dakar · *janvier 2025 – janvier 2026*
 Développement d'applications web internes pour La Poste dans le cadre du projet DigitalPosteV2, avec Angular et Spring Boot / Java. Intégration d'API, optimisation des performances, correction de bugs et collaboration avec des équipes pluridisciplinaires.
