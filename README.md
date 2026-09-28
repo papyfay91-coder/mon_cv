@@ -3,6 +3,7 @@
 **Développeur Fullstack – en CDI à La Poste (Dakar) depuis le 08 janvier 2026**
 
 - 📄 [Mon_CV.pdf](Mon_CV.pdf) : version à envoyer ou à téléverser sur les sites d'emploi
+- 💼 LinkedIn : https://www.linkedin.com/in/pape-ahmadou/
 - 🌐 [cv.html](cv.html) : source du CV (régénérer le PDF avec l'impression navigateur, format A4, sans marges)
 
 ---
@@ -46,4 +47,4 @@ Java / Spring Boot · Angular / TypeScript · React Native · HTML / CSS / JavaS
 Français (maternelle) · Wolof (maternelle) · Anglais (intermédiaire)
 
 ### Contact
-papyfay91@gmail.com · +221 77 237 90 18 · Mbao, Dakar – Sénégal
+papyfay91@gmail.com · +221 77 237 90 18 · Mbao, Dakar – Sénégal · [LinkedIn](https://www.linkedin.com/in/pape-ahmadou/)
