@@ -18,7 +18,7 @@ Développeur fullstack en CDI à La Poste depuis janvier 2026, après un stage f
 ### Expérience
 
 **Développeur Fullstack – CDI** · La Poste, Dakar · *08 janvier 2026 – aujourd'hui*
-Titularisation en CDI au sein de la DSI, département Génie logiciel. Développement et évolution des applications métier utilisées par plus de 3 500 agents dans plus de 200 bureaux et agences de La Poste, dont la plateforme de livraison Jotnaci (voir projets ci-dessous), avec Angular et Spring Boot / Java : conception de nouvelles fonctionnalités, intégration et sécurisation d'API (Keycloak), optimisation des performances, maintenance corrective et collaboration avec les équipes métier en méthode agile.
+Titularisation en CDI au sein de la DSI, département Génie logiciel. Développement et évolution des applications métier utilisées par plus de 3 500 agents dans plus de 200 bureaux et agences de La Poste, dont la plateforme de livraison Jotnaci et son appli client (voir projets ci-dessous), avec Angular et Spring Boot / Java : conception de nouvelles fonctionnalités, intégration et sécurisation d'API (Keycloak), optimisation des performances, maintenance corrective et collaboration avec les équipes métier en méthode agile.
 
 **Développeur Fullstack – CDD** · La Poste, Dakar · *janvier 2025 – janvier 2026*
 Développement fullstack (Angular, Spring Boot / Java) sur plusieurs projets, dont DigitalPosteV2 : nouvelles fonctionnalités, intégration d'API et correction de bugs.
@@ -37,10 +37,10 @@ Développement d'interfaces web avec Angular, traduction des besoins métier en 
 Java / Spring Boot · Angular / TypeScript · React Native · HTML / CSS / JavaScript · MySQL / PostgreSQL / Oracle · Git / GitHub / GitLab · Azure DevOps · Postman / Swagger · Docker · Keycloak
 
 ### Projets à La Poste
-- **Applications des agents de La Poste** : DigitalPosteV2 · Digital EMS · Courrier · E-commerce · Gestion de stock · Jotnaci (livraison à la demande)
+- **Applications pour les agents et les clients de La Poste** : DigitalPosteV2 · Digital EMS · Courrier · E-commerce · Gestion de stock · Jotnaci (livraison, agents) · Jotnaci Mobile (appli clients)
 
 ### Projet personnel
-**Jotnaci Mobile** (React Native) : application mobile client de livraison à la demande, conçue et développée seul, en complément de la plateforme Jotnaci utilisée par les agents.
+**Samaoto** (React Native) : application mobile conçue et développée seul.
 
 ### Langues
 Français (maternelle) · Wolof (maternelle) · Anglais (intermédiaire)
