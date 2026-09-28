@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV – Pape Ahmadou Coly Faye – Développeur Fullstack</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --navy: #0f1f4b;
+    --band: #dbe1f4;
+    --panel: #f1f4fd;
+    --text: #1d2230;
+    --muted: #4a5068;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #fff; }
+  body {
+    font-family: "Segoe UI", "Noto Sans", "DejaVu Sans", Arial, sans-serif;
+    color: var(--text);
+    font-size: 10pt;
+    line-height: 1.45;
+  }
+  .page {
+    width: 210mm;
+    height: 297mm;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 74mm 1fr;
+  }
+  .band {
+    position: absolute; top: 0; left: 8mm; right: 8mm; height: 42mm;
+    background: var(--band); z-index: 0;
+  }
+  aside, main { position: relative; z-index: 1; }
+
+  /* ---------- colonne gauche ---------- */
+  aside { padding: 8mm 0 8mm 14mm; display: flex; flex-direction: column; gap: 5mm; }
+  .card { background: var(--panel); padding: 6mm 6mm; }
+  .card.top { padding-top: 8mm; }
+  .photo {
+    width: 40mm; height: 44mm; object-fit: cover; object-position: center 20%;
+    display: block; margin: 0 auto 7mm;
+  }
+  aside h2 {
+    color: var(--navy); font-size: 14pt; letter-spacing: .5px; margin-bottom: 3mm;
+  }
+  .card.top h2 { background: #fff; display: inline-block; padding: 1mm 3mm; margin-left: -3mm; }
+  .contact li { list-style: none; display: flex; align-items: center; gap: 3mm; margin-bottom: 2.5mm; font-size: 9pt; }
+  .contact svg { width: 4.2mm; height: 4.2mm; fill: #3a55a8; flex: none; }
+  aside h3 { font-size: 8.5pt; font-weight: 700; color: var(--navy); margin: 3mm 0 2mm; text-transform: uppercase; }
+  aside ul.plain { list-style: none; font-size: 9pt; line-height: 1.5; }
+  .edu { margin-bottom: 4mm; font-size: 9pt; }
+  .edu strong { display: block; font-size: 8.5pt; color: var(--navy); text-transform: uppercase; }
+  .edu em { display: block; }
+  .edu b { color: var(--navy); }
+
+  /* ---------- colonne droite ---------- */
+  main { padding: 8mm 14mm 8mm 8mm; }
+  .name { font-size: 26pt; font-weight: 400; color: var(--navy); line-height: 1.02; letter-spacing: 2px; margin-top: 2mm; }
+  .role { font-weight: 700; color: var(--navy); font-size: 11pt; margin-top: 2mm; letter-spacing: .3px; }
+  .status {
+    display: inline-block; margin-top: 2mm; font-size: 8.5pt; font-weight: 700;
+    background: var(--navy); color: #fff; padding: .6mm 2.5mm; border-radius: 1mm;
+  }
+  .summary { margin-top: 6mm; font-size: 9pt; line-height: 1.4; }
+  main h2 {
+    display: inline-block; background: var(--panel); color: var(--navy);
+    font-size: 13pt; letter-spacing: .5px; padding: .5mm 3mm; margin: 4.5mm 0 2.5mm -1mm;
+  }
+  .job { margin-bottom: 3mm; }
+  .job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4mm; }
+  .job-title { font-weight: 700; color: var(--navy); font-size: 9pt; text-transform: uppercase; }
+  .job-date { font-weight: 700; color: var(--navy); font-size: 8.5pt; white-space: nowrap; text-transform: uppercase; }
+  .job-place { font-style: italic; color: var(--muted); margin-bottom: 1mm; }
+  .job p { font-size: 8.8pt; line-height: 1.4; }
+  .tag { font-size: 7.5pt; background: var(--navy); color: #fff; padding: .2mm 1.5mm; border-radius: 1mm; vertical-align: middle; margin-left: 1mm; }
+  .expertise { list-style: none; font-size: 9pt; }
+  .expertise li::before { content: "◆"; color: var(--navy); font-size: 7pt; margin-right: 2.5mm; vertical-align: middle; }
+  .expertise li { margin-bottom: 1mm; }
+
+  @media screen and (max-width: 820px) {
+    .page { width: 100%; height: auto; grid-template-columns: 1fr; }
+    aside { padding: 16px; order: 2; }
+    main { padding: 16px; }
+    .band { left: 0; right: 0; }
+    .job-head { flex-direction: column; gap: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="band"></div>
+
+  <aside>
+    <div class="card top">
+      <img class="photo" src="assets/photo.jpg" alt="Photo de Pape Ahmadou Coly Faye">
+      <h2>CONTACT</h2>
+      <ul class="contact">
+        <li><svg viewBox="0 0 24 24"><path d="M2 5h20v14H2z" opacity=".25"/><path d="M2 5l10 8 10-8v2l-10 8L2 7z"/></svg>papyfay91@gmail.com</li>
+        <li><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15 15 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11.4 11.4 0 003.6.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1z"/></svg>+221 77 237 90 18</li>
+        <li><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/></svg>Mbao, Dakar – Sénégal</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>COMPÉTENCES</h2>
+      <h3>Technologies &amp; outils maîtrisés</h3>
+      <ul class="plain">
+        <li>Java / Spring Boot</li>
+        <li>Angular / TypeScript</li>
+        <li>React Native</li>
+        <li>HTML / CSS / JavaScript</li>
+        <li>MySQL / PostgreSQL / Oracle</li>
+        <li>Git / GitHub / GitLab</li>
+        <li>Azure DevOps</li>
+        <li>Postman / Swagger</li>
+        <li>Docker</li>
+        <li>Keycloak</li>
+      </ul>
+      <h3>Langues parlées</h3>
+      <ul class="plain">
+        <li>Français : langue maternelle</li>
+        <li>Anglais : niveau intermédiaire</li>
+        <li>Wolof : langue maternelle</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>FORMATION</h2>
+      <div class="edu">
+        <strong>Licence en informatique de gestion</strong>
+        <em>UCAO Saint-Michel</em>
+        <b>2020 – 2023</b>
+      </div>
+      <div class="edu">
+        <strong>Baccalauréat</strong>
+        Groupe Scolaire Educazur<br>
+        <b>2019 – 2020</b>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <h1 class="name">Pape<br>Ahmadou<br>Coly Faye</h1>
+    <div class="role">DÉVELOPPEUR FULLSTACK</div>
+    <div class="status">En CDI à La Poste (Dakar) depuis le 08 janvier 2026</div>
+
+    <p class="summary">
+      Développeur fullstack en CDI à La Poste depuis janvier 2026, après un stage frontend,
+      un stage fullstack et un CDD sur le projet DigitalPosteV2. Je conçois et maintiens des
+      applications web avec Angular et Spring Boot / Java, de l’interface jusqu’à l’API et la
+      base de données, avec le souci du détail et de la qualité.
+    </p>
+
+    <h2>EXPÉRIENCE</h2>
+
+    <div class="job">
+      <div class="job-head">
+        <div class="job-title">Développeur Fullstack – CDI</div>
+        <div class="job-date">08 janvier 2026 à aujourd’hui</div>
+      </div>
+      <div class="job-place">La Poste, Dakar</div>
+      <p>Titularisation en CDI au sein de l’équipe <strong>DigitalPosteV2</strong>. Développement et
+        évolution des applications web internes de La Poste avec Angular (front-end) et
+        Spring Boot / Java (back-end) : conception de nouvelles fonctionnalités, intégration et
+        sécurisation d’API (Keycloak), optimisation des performances, maintenance corrective et
+        collaboration avec les équipes métier en méthode agile.</p>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <div class="job-title">Développeur Fullstack – CDD</div>
+        <div class="job-date">Janvier 2025 à janvier 2026</div>
+      </div>
+      <div class="job-place">La Poste, Dakar</div>
+      <p>Développement d’applications web internes pour La Poste dans le cadre du projet
+        <strong>DigitalPosteV2</strong>, avec Angular et Spring Boot / Java. Intégration d’API,
+        optimisation des performances, correction de bugs et collaboration avec des équipes
+        pluridisciplinaires.</p>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <div class="job-title">Stagiaire Développeur Fullstack</div>
+        <div class="job-date">Octobre à décembre 2024</div>
+      </div>
+      <div class="job-place">La Poste, Dakar</div>
+      <p>Première expérience sur le projet DigitalPosteV2 avec une montée en compétences rapide :
+        développement d’applications web en Angular et Spring Boot, conception d’interfaces
+        modernes, implémentation de fonctionnalités fullstack et résolution de bugs.</p>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <div class="job-title">Stagiaire Développeur Frontend</div>
+        <div class="job-date">Novembre 2023 à février 2024</div>
+      </div>
+      <div class="job-place">La Poste, Dakar</div>
+      <p>Développement d’interfaces web avec <strong>Angular</strong>, traduction des besoins métier
+        en solutions techniques et contribution aux phases de tests utilisateurs.</p>
+    </div>
+
+    <h2>EXPERTISE</h2>
+    <ul class="expertise">
+      <li>Développement d’applications fullstack (Angular / Spring Boot)</li>
+      <li>Conception et intégration d’API REST</li>
+      <li>Interfaces web Angular et mobiles React Native</li>
+      <li>Travail en équipe agile (Azure DevOps, Git)</li>
+    </ul>
+  </main>
+</div>
+</body>
+</html>
