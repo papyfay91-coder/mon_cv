@@ -28,7 +28,7 @@
     position: relative;
     overflow: hidden;
     display: grid;
-    grid-template-columns: 74mm 1fr;
+    grid-template-columns: 74mm minmax(0, 1fr);
   }
   .band {
     position: absolute; top: 0; left: 8mm; right: 8mm; height: 42mm;
@@ -77,9 +77,9 @@
   .job-place { font-style: italic; color: var(--muted); margin-bottom: 1mm; }
   .job p { font-size: 8.8pt; line-height: 1.4; }
   .tag { font-size: 7.5pt; background: var(--navy); color: #fff; padding: .2mm 1.5mm; border-radius: 1mm; vertical-align: middle; margin-left: 1mm; }
-  .expertise { list-style: none; font-size: 9pt; }
-  .expertise li::before { content: "◆"; color: var(--navy); font-size: 7pt; margin-right: 2.5mm; vertical-align: middle; }
-  .expertise li { margin-bottom: 1mm; }
+  .projects { display: flex; flex-wrap: wrap; gap: 1.8mm; }
+  .project { border-left: 1mm solid var(--navy); background: var(--panel); padding: .8mm 2.5mm; font-size: 8.8pt; font-weight: 700; color: var(--navy); }
+  .project small { font-weight: 400; color: var(--muted); font-size: 8pt; }
 
   @media screen and (max-width: 820px) {
     .page { width: 100%; height: auto; grid-template-columns: 1fr; }
@@ -150,9 +150,9 @@
 
     <p class="summary">
       Développeur fullstack en CDI à La Poste depuis janvier 2026, après un stage frontend,
-      un stage fullstack et un CDD sur plusieurs projets, dont DigitalPosteV2. Je conçois et maintiens des
+      un stage fullstack et un CDD sur plusieurs projets (DigitalPosteV2, JotNaci, Digital EMS…). Je conçois et maintiens des
       applications web avec Angular et Spring Boot / Java, de l’interface jusqu’à l’API et la
-      base de données, avec le souci du détail et de la qualité.
+      base de données.
     </p>
 
     <h2>EXPÉRIENCE</h2>
@@ -163,9 +163,8 @@
         <div class="job-date">08 janvier 2026 à aujourd’hui</div>
       </div>
       <div class="job-place">La Poste, Dakar</div>
-      <p>Titularisation en CDI au sein de la <strong>DSI, département Génie logiciel</strong>, sur plusieurs projets, dont <strong>DigitalPosteV2</strong>. Développement et
-        évolution des applications web internes de La Poste avec Angular (front-end) et
-        Spring Boot / Java (back-end) : conception de nouvelles fonctionnalités, intégration et
+      <p>Titularisation en CDI au sein de la <strong>DSI, département Génie logiciel</strong>. Développement et évolution des applications web et mobiles de
+        La Poste (voir projets ci-dessous) avec Angular et Spring Boot / Java : conception de nouvelles fonctionnalités, intégration et
         sécurisation d’API (Keycloak), optimisation des performances, maintenance corrective et
         collaboration avec les équipes métier en méthode agile.</p>
     </div>
@@ -203,13 +202,16 @@
         en solutions techniques et contribution aux phases de tests utilisateurs.</p>
     </div>
 
-    <h2>EXPERTISE</h2>
-    <ul class="expertise">
-      <li>Développement d’applications fullstack (Angular / Spring Boot)</li>
-      <li>Conception et intégration d’API REST</li>
-      <li>Interfaces web Angular et mobiles React Native</li>
-      <li>Travail en équipe agile (Azure DevOps, Git)</li>
-    </ul>
+    <h2>PROJETS À LA POSTE</h2>
+    <div class="projects">
+      <div class="project">DigitalPosteV2</div>
+      <div class="project">JotNaci <small>(web)</small></div>
+      <div class="project">JotNaci Mobile</div>
+      <div class="project">Digital EMS</div>
+      <div class="project">Courrier</div>
+      <div class="project">E-commerce</div>
+      <div class="project">Gestion de stock</div>
+    </div>
   </main>
 </div>
 </body>
