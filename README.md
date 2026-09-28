@@ -13,18 +13,18 @@
 Développeur Fullstack (Angular · Spring Boot / Java) – CDI chez La Poste, Dakar
 
 ### Résumé
-Développeur fullstack en CDI à La Poste depuis janvier 2026, après un stage frontend, un stage fullstack et un CDD sur plusieurs projets (DigitalPosteV2, Jotnaci, Digital EMS…). Je conçois et maintiens des applications web avec Angular et Spring Boot / Java, de l'interface jusqu'à l'API et la base de données.
+Développeur fullstack en CDI à La Poste depuis janvier 2026, après un stage frontend, un stage fullstack et un CDD sur plusieurs projets (DigitalPosteV2, Jotnaci, Digital EMS…). Je conçois et maintiens, avec Angular et Spring Boot / Java, des applications utilisées au quotidien par plus de 3 500 agents, de l'interface jusqu'à l'API et la base de données.
 
 ### Expérience
 
 **Développeur Fullstack – CDI** · La Poste, Dakar · *08 janvier 2026 – aujourd'hui*
-Titularisation en CDI au sein de la DSI, département Génie logiciel. Développement et évolution des applications métier utilisées par les agents de La Poste et de l'application client de livraison Jotnaci (voir projets ci-dessous), avec Angular et Spring Boot / Java : conception de nouvelles fonctionnalités, intégration et sécurisation d'API (Keycloak), optimisation des performances, maintenance corrective et collaboration avec les équipes métier en méthode agile.
+Titularisation en CDI au sein de la DSI, département Génie logiciel. Développement et évolution des applications métier utilisées par plus de 3 500 agents dans plus de 200 bureaux et agences de La Poste, et de l'application client de livraison Jotnaci (voir projets ci-dessous), avec Angular et Spring Boot / Java : conception de nouvelles fonctionnalités, intégration et sécurisation d'API (Keycloak), optimisation des performances, maintenance corrective et collaboration avec les équipes métier en méthode agile.
 
 **Développeur Fullstack – CDD** · La Poste, Dakar · *janvier 2025 – janvier 2026*
-Développement d'applications web internes pour La Poste sur plusieurs projets, dont DigitalPosteV2, avec Angular et Spring Boot / Java. Intégration d'API, optimisation des performances, correction de bugs et collaboration avec des équipes pluridisciplinaires.
+Développement fullstack (Angular, Spring Boot / Java) sur plusieurs projets, dont DigitalPosteV2 : nouvelles fonctionnalités, intégration d'API et correction de bugs.
 
 **Stagiaire Développeur Fullstack** · La Poste, Dakar · *octobre – décembre 2024*
-Première expérience sur le projet DigitalPosteV2 avec une montée en compétences rapide : développement d'applications web en Angular et Spring Boot, conception d'interfaces modernes, implémentation de fonctionnalités fullstack et résolution de bugs.
+Première expérience sur DigitalPosteV2 : fonctionnalités fullstack en Angular et Spring Boot, interfaces modernes et résolution de bugs.
 
 **Stagiaire Développeur Frontend** · La Poste, Dakar · *novembre 2023 – février 2024*
 Développement d'interfaces web avec Angular, traduction des besoins métier en solutions techniques et contribution aux phases de tests utilisateurs.
