@@ -40,7 +40,7 @@ Java / Spring Boot · Angular / TypeScript · React Native · HTML / CSS / JavaS
 - **Applications pour les agents et les clients de La Poste** : DigitalPosteV2 · Digital EMS · Courrier · E-commerce · Gestion de stock · Jotnaci (livraison, agents) · Jotnaci Mobile (appli clients)
 
 ### Projet personnel
-**Samaoto** (React Native) : application mobile conçue et développée seul.
+**Samaoto** (React Native) : application mobile de location, d'achat et de vente de voitures, conçue et développée seul.
 
 ### Langues
 Français (maternelle) · Wolof (maternelle) · Anglais (intermédiaire)
