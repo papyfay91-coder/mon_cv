@@ -38,7 +38,7 @@ Java / Spring Boot · Angular / TypeScript · React Native · HTML / CSS / JavaS
 
 ### Projets à La Poste
 - **Applications des agents de La Poste** : DigitalPosteV2 · Digital EMS · Courrier · E-commerce · Gestion de stock
-- **JotNaci – livraison à la demande** : JotNaci (web) · JotNaci Mobile (appli clients)
+- **JotNaci – livraison à la demande** : JotNaci (agents) · JotNaci Mobile (appli clients)
 
 ### Langues
 Français (maternelle) · Wolof (maternelle) · Anglais (intermédiaire)
