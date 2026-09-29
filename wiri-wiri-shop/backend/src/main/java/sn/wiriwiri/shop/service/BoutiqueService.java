@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sn.wiriwiri.shop.config.WiriWiriProperties;
 import sn.wiriwiri.shop.dto.BoutiqueDto;
 import sn.wiriwiri.shop.dto.MiseAJourBoutique;
 import sn.wiriwiri.shop.entity.Boutique;
@@ -29,15 +30,22 @@ public class BoutiqueService {
     private final CodeOtpRepository codes;
     private final StockageService stockage;
     private final Clock horloge;
+    private final BoutiqueDto.TraitementVocal traitementVocal;
 
     public BoutiqueService(BoutiqueRepository boutiques, ProduitRepository produits, CommandeRepository commandes,
-                           CodeOtpRepository codes, StockageService stockage, Clock horloge) {
+                           CodeOtpRepository codes, StockageService stockage, Clock horloge,
+                           WiriWiriProperties proprietes) {
         this.boutiques = boutiques;
         this.produits = produits;
         this.commandes = commandes;
         this.codes = codes;
         this.stockage = stockage;
         this.horloge = horloge;
+        this.traitementVocal = BoutiqueDto.TraitementVocal.de(proprietes.ia());
+    }
+
+    private BoutiqueDto dto(Boutique b) {
+        return BoutiqueDto.de(b, traitementVocal);
     }
 
     Boutique charger(UUID id) {
@@ -47,7 +55,7 @@ public class BoutiqueService {
 
     @Transactional(readOnly = true)
     public BoutiqueDto profil(UUID id) {
-        return BoutiqueDto.de(charger(id));
+        return dto(charger(id));
     }
 
     @Transactional
@@ -63,7 +71,7 @@ public class BoutiqueService {
         if (maj.lienWave() != null) {
             b.setLienWave(maj.lienWave().isBlank() ? null : maj.lienWave().trim());
         }
-        return BoutiqueDto.de(b);
+        return dto(b);
     }
 
     /** Consentement explicite (CDP) au traitement de la voix, horodaté. */
@@ -73,14 +81,14 @@ public class BoutiqueService {
         if (!b.aConsenti()) {
             b.setDateConsentement(LocalDateTime.now(horloge));
         }
-        return BoutiqueDto.de(b);
+        return dto(b);
     }
 
     @Transactional
     public BoutiqueDto retirerConsentement(UUID id) {
         Boutique b = charger(id);
         b.setDateConsentement(null);
-        return BoutiqueDto.de(b);
+        return dto(b);
     }
 
     /**

@@ -66,6 +66,9 @@ wiriwiri:
     # le backend relance automatiquement en détection automatique.
     langue: ${WHISPER_LANGUE:wo}
     delai: ${IA_DELAI:PT60S}
+    # Affiché au vendeur dans l'écran de consentement : doit refléter les adresses ci-dessus.
+    hebergement: ${IA_HEBERGEMENT:EXTERNE}
+    fournisseur: ${IA_FOURNISSEUR:OpenAI}
   stockage:
     repertoire: ${STORAGE_DIR:./data/uploads}
     url-publique: ${STORAGE_PUBLIC_URL:http://localhost:8080/fichiers}

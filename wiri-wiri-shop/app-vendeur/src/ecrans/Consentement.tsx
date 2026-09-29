@@ -1,12 +1,34 @@
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { api, Boutique } from '../api';
+import { api, Boutique, TraitementVocal } from '../api';
 import { espace, typo } from '../theme';
 import { Bouton, Carte, Ecran, Message, NomIcone, Pictogramme } from '../ui';
 
-const POINTS: { icone: NomIcone; titre: string; texte: string }[] = [
+type Point = { icone: NomIcone; titre: string; texte: string };
+
+/**
+ * Le texte décrit le traitement réellement configuré sur le serveur (CDP : information exacte).
+ * Sans information du serveur, on affiche le cas le plus large (service tiers hors du Sénégal).
+ */
+function lieuDeTraitement(traitement?: TraitementVocal): Point {
+  if (traitement?.hebergement === 'LOCAL') {
+    return {
+      icone: 'server-outline',
+      titre: 'Traitée chez nous',
+      texte: 'Votre note vocale est transcrite par notre propre IA, sur nos serveurs. Elle n\'est envoyée à aucun service extérieur.',
+    };
+  }
+  const fournisseur = traitement?.fournisseur ?? 'un service d\'intelligence artificielle';
+  return {
+    icone: 'cloud-outline',
+    titre: 'Transcription par IA',
+    texte: `Votre note vocale est transcrite par ${fournisseur}, sur des serveurs situés hors du Sénégal.`,
+  };
+}
+
+const points = (traitement?: TraitementVocal): Point[] => [
   { icone: 'mic-outline', titre: 'Un seul usage', texte: 'Le micro sert uniquement à remplir la fiche de votre article : nom, prix, taille.' },
-  { icone: 'cloud-outline', titre: 'Transcription par IA', texte: 'Votre note vocale est transcrite par OpenAI, sur des serveurs situés hors du Sénégal.' },
+  lieuDeTraitement(traitement),
   { icone: 'trash-outline', titre: 'Jamais conservée', texte: 'L\'enregistrement est supprimé dès que la fiche est remplie.' },
   { icone: 'options-outline', titre: 'Vous gardez la main', texte: 'Vous vérifiez chaque fiche, et pouvez retirer votre accord à tout moment dans les Paramètres.' },
 ];
@@ -15,7 +37,8 @@ const POINTS: { icone: NomIcone; titre: string; texte: string }[] = [
  * Consentement explicite et éclairé (CDP) AVANT toute lecture du micro ou envoi d'audio.
  * Le vendeur peut refuser : il saisira alors ses fiches à la main.
  */
-export default function Consentement({ onAccepte, onRefuse }: {
+export default function Consentement({ traitement, onAccepte, onRefuse }: {
+  traitement?: TraitementVocal;
   onAccepte: (b: Boutique) => void;
   onRefuse: () => void;
 }) {
@@ -49,7 +72,7 @@ export default function Consentement({ onAccepte, onRefuse }: {
       </View>
 
       <Carte style={{ gap: espace.l }}>
-        {POINTS.map((p) => (
+        {points(traitement).map((p) => (
           <View key={p.titre} style={styles.ligne}>
             <Pictogramme icone={p.icone} taille={40} />
             <View style={{ flex: 1, gap: 2 }}>

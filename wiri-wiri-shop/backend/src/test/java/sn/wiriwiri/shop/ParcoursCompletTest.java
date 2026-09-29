@@ -67,7 +67,10 @@ class ParcoursCompletTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nomVendeur").value("Awa Fashion"))
                 .andExpect(jsonPath("$.telephone").value("+221771234567"))
-                .andExpect(jsonPath("$.consentementDonne").value(false));
+                .andExpect(jsonPath("$.consentementDonne").value(false))
+                // Le vendeur sait, avant de consentir, où sa voix est traitée
+                .andExpect(jsonPath("$.traitementVocal.hebergement").value("EXTERNE"))
+                .andExpect(jsonPath("$.traitementVocal.fournisseur").value("OpenAI"));
 
         // Pas de micro sans consentement explicite (CDP)
         MockMultipartFile audio = new MockMultipartFile("audio", "note.wav", "audio/wav", WAV);

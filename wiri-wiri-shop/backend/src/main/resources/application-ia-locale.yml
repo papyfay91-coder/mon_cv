@@ -14,3 +14,6 @@ wiriwiri:
       modele: ${LLM_MODEL:qwen2.5:7b}
     # Les modèles locaux sont plus lents, surtout au premier appel (chargement en mémoire).
     delai: ${IA_DELAI:PT180S}
+    hebergement: LOCAL
+    fournisseur: ""
+

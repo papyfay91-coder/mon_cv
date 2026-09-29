@@ -54,6 +54,7 @@ export default function App() {
     case 'consentement':
       contenu = (
         <Consentement
+          traitement={boutique?.traitementVocal}
           onAccepte={(b) => {
             setBoutique(b);
             setEcran('produits');

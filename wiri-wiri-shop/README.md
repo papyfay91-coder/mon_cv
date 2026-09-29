@@ -86,7 +86,7 @@ Les erreurs suivent le format `ProblemDetail` (RFC 9457) avec un champ `code` st
 | Injections SQL | Spring Data JPA / JPQL paramétré uniquement |
 | XSS / CSRF | CSRF désactivé (stateless) ; nettoyage des saisies côté React **et** côté API ; CSP stricte sur l'API et la vitrine ; liens de paiement filtrés par liste blanche |
 | Bucket4j | `LimitationDebitFilter` : 120 req/min/IP globalement, 5 req/min/IP sur `/api/auth/**` |
-| Consentement explicite (CDP) | Écran `Consentement` avant toute demande d'accès au micro ; `date_consentement` horodatée ; l'API refuse l'analyse vocale sans consentement |
+| Consentement explicite (CDP) | Écran `Consentement` avant toute demande d'accès au micro ; il indique où la voix est réellement traitée (`wiriwiri.ia.hebergement` : service tiers hors du Sénégal ou serveurs de Wiri-Wiri) ; `date_consentement` horodatée ; l'API refuse l'analyse vocale sans consentement |
 | Droit à l'oubli | `DELETE /api/vendeur/compte` : commandes, produits, OTP, boutique, puis fichiers images après validation de la transaction |
 | Finalité des audios | L'audio reste **en mémoire** le temps de la requête (`file-size-threshold`), il n'est jamais écrit sur disque ni en base |
 | Non-détention de fonds (BCEAO) | Aucun flux financier : liens `wa.me`, lien Wave du vendeur avec montant, USSD Orange Money `#144#` |

@@ -44,7 +44,20 @@ public record WiriWiriProperties(
             @Valid @NotNull Service transcription,
             @Valid @NotNull Service extraction,
             String langue,
-            @NotNull Duration delai) {
+            @NotNull Duration delai,
+            @NotNull Hebergement hebergement,
+            String fournisseur) {
+    }
+
+    /**
+     * Où la voix est traitée. Affiché tel quel au vendeur dans l'écran de consentement (CDP) :
+     * doit correspondre à la configuration réelle des services ci-dessus.
+     */
+    public enum Hebergement {
+        /** Service tiers (ex. OpenAI), serveurs hors du Sénégal. */
+        EXTERNE,
+        /** Serveurs de Wiri-Wiri Shop : la voix n'est envoyée à aucun service extérieur. */
+        LOCAL
     }
 
     public record Service(

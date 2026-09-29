@@ -28,7 +28,8 @@ class ClientsIaTest {
     private static WiriWiriProperties proprietes(WiriWiriProperties.Service transcription,
                                                  WiriWiriProperties.Service extraction) {
         return new WiriWiriProperties(null, null,
-                new WiriWiriProperties.Ia(transcription, extraction, "wo", Duration.ofSeconds(5)), null);
+                new WiriWiriProperties.Ia(transcription, extraction, "wo", Duration.ofSeconds(5),
+                        WiriWiriProperties.Hebergement.EXTERNE, "OpenAI"), null);
     }
 
     private final RestClient.Builder builder = RestClient.builder()

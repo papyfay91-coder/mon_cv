@@ -6,12 +6,19 @@ export const VITRINE_URL = process.env.EXPO_PUBLIC_VITRINE_URL ?? 'http://localh
 
 const CLE_JETON = 'wiriwiri.jeton';
 
+/** Où la voix est traitée : sur les serveurs de Wiri-Wiri Shop, ou chez un service tiers. */
+export interface TraitementVocal {
+  hebergement: 'LOCAL' | 'EXTERNE';
+  fournisseur: string | null;
+}
+
 export interface Boutique {
   id: string;
   nomVendeur: string;
   telephone: string;
   consentementDonne: boolean;
   lienWave: string | null;
+  traitementVocal?: TraitementVocal;
 }
 
 export interface Produit {

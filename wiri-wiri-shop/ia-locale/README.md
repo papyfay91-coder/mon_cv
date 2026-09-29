@@ -42,7 +42,8 @@ Dans le terminal du backend, ajoutez simplement le profil `ia-locale` :
 export SPRING_PROFILES_ACTIVE=ia-locale
 mvn spring-boot:run
 ```
-Aucune clé n'est nécessaire. La première analyse vocale est plus lente (chargement des modèles en mémoire), les suivantes vont plus vite.
+Aucune clé n'est nécessaire. L'écran de consentement de l'app indique alors automatiquement au vendeur
+que sa voix est traitée sur vos serveurs, sans service extérieur (réglage `wiriwiri.ia.hebergement: LOCAL` du profil). La première analyse vocale est plus lente (chargement des modèles en mémoire), les suivantes vont plus vite.
 
 ## À savoir
 - **Wolof** : Whisper ne prend pas officiellement en charge le wolof (`wo`). Le serveur passe alors en détection automatique ;

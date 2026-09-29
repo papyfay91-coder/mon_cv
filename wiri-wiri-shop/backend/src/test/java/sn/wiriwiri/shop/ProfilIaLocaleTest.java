@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import sn.wiriwiri.shop.config.WiriWiriProperties;
+import sn.wiriwiri.shop.dto.BoutiqueDto;
 
 /** Le profil « ia-locale » pointe vers les serveurs gratuits de la machine, sans clé. */
 @SpringBootTest
@@ -27,5 +28,8 @@ class ProfilIaLocaleTest {
         assertThat(ia.transcription().aUneCle()).isFalse();
         assertThat(ia.transcription().estConfigure()).isTrue();
         assertThat(ia.extraction().estConfigure()).isTrue();
+        // Affiché au vendeur : rien n'est envoyé à un service extérieur
+        assertThat(ia.hebergement()).isEqualTo(WiriWiriProperties.Hebergement.LOCAL);
+        assertThat(BoutiqueDto.TraitementVocal.de(ia).fournisseur()).isNull();
     }
 }
