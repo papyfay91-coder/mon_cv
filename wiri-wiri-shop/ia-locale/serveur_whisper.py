@@ -17,6 +17,7 @@ import io
 import logging
 import os
 import threading
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 
@@ -26,9 +27,26 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 TAILLE_MAX = 10 * 1024 * 1024  # identique à la limite du backend
 NOM_MODELE = os.environ.get("WHISPER_MODELE", "small")
 
-app = FastAPI(title="Wiri-Wiri Whisper local")
 _verrou = threading.Lock()
 _modele = None
+
+
+@asynccontextmanager
+async def demarrage(_app):
+    """Télécharge et charge le modèle dès le lancement, en arrière-plan : la première note vocale
+    n'attend pas (le téléphone abandonne une requête au bout de quelques minutes)."""
+    threading.Thread(target=_precharger, daemon=True).start()
+    yield
+
+
+def _precharger():
+    try:
+        modele()
+    except Exception:  # réseau coupé, disque plein… : nouvel essai au premier appel
+        journal.exception("Préchargement du modèle impossible")
+
+
+app = FastAPI(title="Wiri-Wiri Whisper local", lifespan=demarrage)
 
 
 def modele():
@@ -56,7 +74,7 @@ def langue_supportee(code: str | None) -> str | None:
 
 @app.get("/health")
 def sante():
-    return {"status": "UP", "modele": NOM_MODELE}
+    return {"status": "UP", "modele": NOM_MODELE, "pret": _modele is not None}
 
 
 @app.post("/v1/audio/transcriptions")

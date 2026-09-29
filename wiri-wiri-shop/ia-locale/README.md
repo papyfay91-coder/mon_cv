@@ -27,13 +27,14 @@ source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn serveur_whisper:app --port 9000
 ```
-Le modèle `small` (environ 500 Mo) se télécharge au premier appel, puis reste en cache.
+Le modèle `small` (environ 500 Mo) se télécharge et se charge dès le lancement, puis reste en cache.
+Attendez `"pret": true` sur http://localhost:9000/health avant la première note vocale.
 Pour une meilleure qualité mais plus lent : `WHISPER_MODELE=medium uvicorn serveur_whisper:app --port 9000`.
 
-**3. Vérifier**
+**3. Vérifier et préchauffer**
 ```bash
-curl http://localhost:9000/health        # {"status":"UP","modele":"small"}
-curl http://localhost:11434/api/tags     # liste les modèles Ollama installés
+curl http://localhost:9000/health           # attendre "pret": true
+ollama run qwen2.5:7b "Bonjour" --verbose   # charge le modèle en mémoire (reste chargé quelques minutes)
 ```
 
 ## Lancer le backend en mode IA locale

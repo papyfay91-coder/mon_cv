@@ -66,6 +66,37 @@ async function requete<T>(chemin: string, options: RequestInit = {}): Promise<T>
   return corps as T;
 }
 
+/** L'analyse vocale peut être longue (IA locale : chargement des modèles au premier appel). */
+const DELAI_ANALYSE_MS = 200_000;
+
+/**
+ * Envoi multipart avec un délai explicite. `fetch` n'en propose pas en React Native, et l'iPhone
+ * abandonne sinon au bout de 60 s environ ; XMLHttpRequest transmet ce délai à la couche native.
+ */
+async function envoyerLongtemps<T>(chemin: string, donnees: FormData, delaiMs: number): Promise<T> {
+  const valeur = await jeton.lire();
+  return new Promise<T>((resoudre, rejeter) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `${API_URL}${chemin}`);
+    xhr.timeout = delaiMs;
+    if (valeur) xhr.setRequestHeader('Authorization', `Bearer ${valeur}`);
+    xhr.onload = () => {
+      let corps: { code?: string; detail?: string } = {};
+      try {
+        corps = JSON.parse(xhr.responseText);
+      } catch {
+        // réponse sans corps JSON
+      }
+      if (xhr.status >= 200 && xhr.status < 300) resoudre(corps as T);
+      else rejeter(new ErreurApi(xhr.status, corps.code, corps.detail ?? 'Erreur du serveur.'));
+    };
+    xhr.ontimeout = () => rejeter(new ErreurApi(0, 'DELAI_DEPASSE',
+      'L\'analyse prend trop de temps. Réessayez dans un instant : la première fois, l\'IA se charge.'));
+    xhr.onerror = () => rejeter(new ErreurApi(0, 'RESEAU', 'Serveur injoignable. Vérifiez que l\'API tourne et le Wi-Fi.'));
+    xhr.send(donnees);
+  });
+}
+
 /**
  * Pièce jointe multipart : React Native (iOS / Android) attend { uri, name, type } ;
  * le navigateur (aperçu web) attend un vrai Blob.
@@ -101,7 +132,7 @@ export const api = {
     const donnees = new FormData();
     const wav = uriAudio.toLowerCase().endsWith('.wav');
     await joindre(donnees, 'audio', uriAudio, wav ? 'note.wav' : 'note.m4a', wav ? 'audio/wav' : 'audio/mp4');
-    return requete<Extraction>('/api/vendeur/produits/analyse-vocale', { method: 'POST', body: donnees });
+    return envoyerLongtemps<Extraction>('/api/vendeur/produits/analyse-vocale', donnees, DELAI_ANALYSE_MS);
   },
 
   publierProduit: async (p: { nomProduit: string; prix: number; taille?: string; uriImage: string; typeImage?: string }) => {

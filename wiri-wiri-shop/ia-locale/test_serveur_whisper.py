@@ -54,4 +54,5 @@ def test_audio_vide_refuse():
 
 
 def test_sante():
-    assert client(FauxModele()).get("/health").json()["status"] == "UP"
+    etat = client(FauxModele()).get("/health").json()
+    assert etat["status"] == "UP" and etat["pret"] is True
