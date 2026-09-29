@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "Wiri-Wiri Shop",
+    "slug": "wiri-wiri-vendeur",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "bundleIdentifier": "sn.wiriwiri.vendeur",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Prendre en photo vos articles pour votre boutique.",
+        "NSMicrophoneUsageDescription": "Décrire vos articles à voix haute (en wolof) pour remplir la fiche automatiquement."
+      }
+    },
+    "android": {
+      "package": "sn.wiriwiri.vendeur",
+      "permissions": ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"],
+      "blockedPermissions": ["android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"]
+    },
+    "plugins": [
+      "expo-secure-store",
+      ["expo-audio", { "microphonePermission": "Décrire vos articles à voix haute (en wolof) pour remplir la fiche automatiquement." }],
+      ["expo-image-picker", { "cameraPermission": "Prendre en photo vos articles pour votre boutique." }]
+    ]
+  }
+}

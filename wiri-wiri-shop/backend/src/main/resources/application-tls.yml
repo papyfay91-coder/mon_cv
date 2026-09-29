@@ -1,0 +1,12 @@
+# Profil activé quand Spring Boot termine lui-même le TLS (sans reverse proxy).
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    protocol: TLS
+    enabled-protocols: TLSv1.3
+    key-store: ${SSL_KEYSTORE}
+    key-store-password: ${SSL_KEYSTORE_PASSWORD}
+    key-store-type: PKCS12
+  http2:
+    enabled: true

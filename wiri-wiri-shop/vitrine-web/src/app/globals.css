@@ -1,0 +1,95 @@
+:root {
+  --fond: #fffaf3;
+  --texte: #1d1b16;
+  --doux: #6b645a;
+  --carte: #ffffff;
+  --bord: #eadfce;
+  --accent: #0e7c5a;
+  --accent-texte: #ffffff;
+  --wave: #1dc8f2;
+  --orange: #ff7900;
+  --whatsapp: #25d366;
+  --erreur: #b3261e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fond: #16140f;
+    --texte: #f3eee6;
+    --doux: #b3aa9c;
+    --carte: #221f18;
+    --bord: #3a352b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--texte);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+a { color: inherit; }
+
+.page { max-width: 960px; margin: 0 auto; padding: 16px; }
+
+.entete { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 16px; }
+.entete h1 { font-size: 1.4rem; margin: 0; }
+.marque { font-size: .8rem; color: var(--doux); text-decoration: none; }
+
+.grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+
+.carte {
+  background: var(--carte);
+  border: 1px solid var(--bord);
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+}
+.carte img { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--bord); display: block; }
+.carte .infos { padding: 8px 10px 12px; }
+.carte .nom { font-size: .95rem; margin: 0 0 4px; line-height: 1.25; }
+.prix { font-weight: 700; color: var(--accent); }
+.taille { font-size: .8rem; color: var(--doux); }
+
+.fiche img { width: 100%; max-width: 480px; aspect-ratio: 1; object-fit: cover; border-radius: 12px; display: block; }
+.fiche h1 { font-size: 1.4rem; margin: 12px 0 4px; }
+
+form { display: grid; gap: 12px; margin-top: 16px; max-width: 480px; }
+label { display: grid; gap: 4px; font-size: .9rem; }
+input {
+  font-size: 1rem;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--bord);
+  background: var(--carte);
+  color: var(--texte);
+}
+
+.bouton {
+  display: block;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: 10px;
+  border: 0;
+  background: var(--accent);
+  color: var(--accent-texte);
+  text-decoration: none;
+  cursor: pointer;
+}
+.bouton[disabled] { opacity: .6; }
+.bouton.whatsapp { background: var(--whatsapp); color: #06301a; }
+.bouton.wave { background: var(--wave); color: #062a33; }
+.bouton.orange { background: var(--orange); color: #2b1400; }
+
+.paiements { display: grid; gap: 10px; margin-top: 16px; max-width: 480px; }
+.note { font-size: .8rem; color: var(--doux); }
+.erreur { color: var(--erreur); font-size: .9rem; }
+.pagination { display: flex; justify-content: space-between; margin-top: 16px; }
