@@ -9,7 +9,7 @@ directement le vendeur par Wave ou Orange Money.
 wiri-wiri-shop/
 ├── backend/        API Spring Boot 3 (Java 17) · PostgreSQL · Flyway
 ├── vitrine-web/    Vitrine client Next.js 15 (rendu serveur + cache 60 s, ~105 ko de JS)
-├── app-vendeur/    Application vendeur React Native (Expo SDK 57)
+├── app-vendeur/    Application vendeur React Native (Expo SDK 54, compatible Expo Go)
 ├── docker-compose.yml, Caddyfile   Déploiement (PostgreSQL + API + vitrine + HTTPS TLS 1.3)
 ```
 
