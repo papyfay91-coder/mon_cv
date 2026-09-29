@@ -1,10 +1,10 @@
 import type { AudioSource } from 'expo-audio';
 
 /**
- * Enregistrements des conditions d'utilisation du micro, lus en wolof par une vraie voix
- * (aucune synthèse vocale ne parle wolof). Une version par lieu de traitement, car le texte diffère.
- *
- * Pour les ajouter : suivre assets/audio/LISEZMOI.md, puis décommenter les lignes ci-dessous.
+ * Conditions d'utilisation du micro, lues en wolof. Une version par lieu de traitement, car le texte diffère.
+ * Deux façons de les obtenir (voir assets/audio/LISEZMOI.md) :
+ *   - voix de synthèse MMS-TTS : `python outils/generer_audio_wolof.py` (active les lignes ci-dessous) ;
+ *   - enregistrement par une vraie voix (recommandé en production), puis décommenter les lignes.
  * Tant qu'une version manque, le bouton « Écouter en wolof » n'est pas affiché pour ce mode.
  */
 export const CONDITIONS_WOLOF: Partial<Record<'LOCAL' | 'EXTERNE', AudioSource>> = {

@@ -1,0 +1,19 @@
+{
+  "_note": "Proposition de traduction du texte de l'écran de consentement : à faire relire par un locuteur natif du wolof.",
+  "commun_debut": [
+    "Salaam aleekum ! Ci Wiri-Wiri Shop, mën nga wax sa njaay ci wolof, te nu bind ko ci sa plaas.",
+    "Déglul bu baax lii, ndax sa baat la.",
+    "Mikro bi, dañu koy jëfandikoo rekk ngir bind xët u sa njaay : tur wi, njëg ji ak taille bi."
+  ],
+  "LOCAL": [
+    "Sa baat, sunu bopp lañu koy bind, ci sunu serwëer yi. Duñu ko yónnee kenn ci biti."
+  ],
+  "EXTERNE": [
+    "Sa baat, OpenAI moo koy bind, ci ay serwëer yu nekk ci biti Senegaal."
+  ],
+  "commun_fin": [
+    "Bu xët wi paree, dañuy far sa baat. Duñu ko denc.",
+    "Yaw miy xool xët wu nekk balaa ngay siiwal. Te mën nga dindi sa ndigël saa su la neexee, ci Paramètres.",
+    "Su nga nangoo, bësal : J'accepte. Su nga nanguwul, mën nga bind loxo, te dara du ci wàññiku."
+  ]
+}

@@ -16,29 +16,28 @@ dont le wolof est la langue maternelle**, et gardez le même sens que le texte f
 
 ## Texte à lire
 
-**Début (les deux versions)**
-> Salaam aleekum ! Ci Wiri-Wiri Shop, mën nga wax sa njaay ci wolof, te nu bind ko ci sa plaas.
-> Déglul bu baax lii, ndax sa baat la.
+Le texte wolof est dans [`conditions-wolof.json`](conditions-wolof.json) : il sert à la fois pour l'enregistrement
+et pour la voix de synthèse. Une version se compose de `commun_debut`, puis `LOCAL` **ou** `EXTERNE`, puis `commun_fin`.
 
-**1. Un seul usage (les deux versions)**
-> Mikro bi, dañu koy jëfandikoo rekk ngir bind xët u sa njaay : tur wi, njëg ji ak taille bi.
+## Option A — Voix de synthèse, sans enregistrement
 
-**2a. Version LOCALE (`conditions-wo-local.m4a`)**
-> Sa baat, sunu bopp lañu koy bind, ci sunu serwëer yi. Duñu ko yónnee kenn ci biti.
+Le script [`outils/generer_audio_wolof.py`](../../outils/generer_audio_wolof.py) fabrique les deux fichiers avec la voix
+wolof **MMS-TTS de Meta**, directement sur votre Mac, puis les active dans l'app :
 
-**2b. Version OPENAI (`conditions-wo-externe.m4a`)**
-> Sa baat, OpenAI moo koy bind, ci ay serwëer yu nekk ci biti Senegaal.
+```bash
+cd ~/wiri/wiri-wiri-shop/app-vendeur
+python3 -m venv .venv-tts && source .venv-tts/bin/activate
+pip install -r outils/requirements-tts.txt     # environ 1 Go (PyTorch)
+python outils/generer_audio_wolof.py            # télécharge la voix (environ 150 Mo) la première fois
+npx expo start --clear
+```
 
-**3. Jamais conservée (les deux versions)**
-> Bu xët wi paree, dañuy far sa baat. Duñu ko denc.
+- **Licence CC-BY-NC 4.0 : usage non commercial uniquement.** Parfait pour tester et faire des démonstrations ;
+  pour la version commerciale, passez à l'option B.
+- **Écoutez les fichiers** (`conditions-wo-local.wav`, `conditions-wo-externe.wav`) avant de les montrer à des vendeurs :
+  une voix de synthèse peut mal prononcer certains mots.
 
-**4. Vous gardez la main (les deux versions)**
-> Yaw miy xool xët wu nekk balaa ngay siiwal. Te mën nga dindi sa ndigël saa su la neexee, ci « Paramètres ».
-
-**Fin (les deux versions)**
-> Su nga nangoo, bësal « J'accepte ». Su nga nanguwul, mën nga bind loxo, te dara du ci wàññiku.
-
-## Enregistrer (iPhone)
+## Option B — Enregistrement par une vraie voix (recommandé en production)
 
 1. Application **Dictaphone** : lisez le texte lentement, dans un endroit calme, téléphone à 20 cm.
 2. Partagez l'enregistrement vers votre Mac (AirDrop). Le fichier est déjà en `.m4a`.

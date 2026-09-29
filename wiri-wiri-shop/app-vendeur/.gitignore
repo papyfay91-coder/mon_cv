@@ -4,3 +4,5 @@ dist/
 ios/
 android/
 .env
+.venv-tts/
+__pycache__/
