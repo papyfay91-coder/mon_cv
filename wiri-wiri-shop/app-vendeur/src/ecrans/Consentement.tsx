@@ -1,8 +1,12 @@
+import { Ionicons } from '@expo/vector-icons';
+import { AudioSource, setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { api, Boutique, TraitementVocal } from '../api';
-import { espace, typo } from '../theme';
-import { Bouton, Carte, Ecran, Message, NomIcone, Pictogramme } from '../ui';
+import { CONDITIONS_WOLOF } from '../audio/conditions';
+import { couleurs, espace, ombre, rayon, typo } from '../theme';
+import { Bouton, Carte, Ecran, Message, NomIcone, Pictogramme, vibrer } from '../ui';
 
 type Point = { icone: NomIcone; titre: string; texte: string };
 
@@ -44,6 +48,7 @@ export default function Consentement({ traitement, onAccepte, onRefuse }: {
 }) {
   const [attente, setAttente] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
+  const audioWolof = CONDITIONS_WOLOF[traitement?.hebergement === 'LOCAL' ? 'LOCAL' : 'EXTERNE'];
 
   const accepter = async () => {
     setAttente(true);
@@ -71,6 +76,12 @@ export default function Consentement({ traitement, onAccepte, onRefuse }: {
         </Text>
       </View>
 
+      {audioWolof ? (
+        <LecteurWolof source={audioWolof} />
+      ) : __DEV__ ? (
+        <Message type="info" texte="Version audio en wolof pas encore enregistrée : voir assets/audio/LISEZMOI.md." />
+      ) : null}
+
       <Carte style={{ gap: espace.l }}>
         {points(traitement).map((p) => (
           <View key={p.titre} style={styles.ligne}>
@@ -91,7 +102,64 @@ export default function Consentement({ traitement, onAccepte, onRefuse }: {
   );
 }
 
+/** Lecture des conditions en wolof : pour les vendeurs qui lisent peu le français. */
+function LecteurWolof({ source }: { source: AudioSource }) {
+  const lecteur = useAudioPlayer(source);
+  const etat = useAudioPlayerStatus(lecteur);
+  const progression = etat.duration > 0 ? Math.min(1, etat.currentTime / etat.duration) : 0;
+  const termine = etat.didJustFinish || (etat.duration > 0 && etat.currentTime >= etat.duration - 0.2);
+
+  const basculer = async () => {
+    vibrer();
+    if (etat.playing) {
+      lecteur.pause();
+      return;
+    }
+    await setAudioModeAsync({ playsInSilentMode: true }); // audible même en mode silencieux (iPhone)
+    if (termine) await lecteur.seekTo(0);
+    lecteur.play();
+  };
+
+  const minutes = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+
+  return (
+    <Pressable onPress={basculer} accessibilityRole="button" testID="bouton-ecouter-wolof"
+               accessibilityLabel={etat.playing ? 'Mettre en pause' : 'Écouter les conditions en wolof'}>
+      <LinearGradient colors={[couleurs.marque, couleurs.marqueFonce]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+                      style={[styles.lecteur, ombre.forte]}>
+        <View style={styles.lecture}>
+          <Ionicons name={etat.playing ? 'pause' : termine ? 'refresh' : 'play'} size={30} color={couleurs.marque} />
+        </View>
+        <View style={{ flex: 1, gap: 6 }}>
+          <Text style={styles.lecteurTitre}>{termine && !etat.playing ? 'Réécouter en wolof' : 'Écouter en wolof'}</Text>
+          <Text style={styles.lecteurSous}>Déglul ci wolof</Text>
+          <View style={styles.barre}>
+            <View style={[styles.barreRemplie, { width: `${progression * 100}%` }]} />
+          </View>
+          {etat.duration > 0 && (
+            <Text style={styles.lecteurTemps}>{minutes(etat.currentTime)} / {minutes(etat.duration)}</Text>
+          )}
+        </View>
+      </LinearGradient>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
+  lecteur: { flexDirection: 'row', alignItems: 'center', gap: espace.l, padding: espace.l, borderRadius: rayon.l },
+  lecture: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: couleurs.blanc,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lecteurTitre: { fontSize: 18, fontWeight: '800', color: couleurs.blanc },
+  lecteurSous: { fontSize: 14, color: 'rgba(255,255,255,0.8)', marginTop: -4 },
+  barre: { height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.25)', overflow: 'hidden' },
+  barreRemplie: { height: 6, borderRadius: 3, backgroundColor: couleurs.accent },
+  lecteurTemps: { fontSize: 12, color: 'rgba(255,255,255,0.8)', fontVariant: ['tabular-nums'] },
   ligne: { flexDirection: 'row', gap: espace.m, alignItems: 'flex-start' },
 });
 
