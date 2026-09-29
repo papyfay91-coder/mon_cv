@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:wiriwiri;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+
+wiriwiri:
+  sms:
+    fournisseur: test
+  planification:
+    active: false
+  securite:
+    # Valeurs de TEST uniquement (32 octets aléatoires en Base64)
+    jwt-secret: dGVzdC1zZWNyZXQtand0LWRlLTMyLW9jdGV0cy1taW4hIQ==
+    cle-aes: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+    poivre-otp: cG9pdnJlLW90cC1kZS10ZXN0
+  limitation:
+    requetes-par-minute: 10000
+    auth-requetes-par-minute: 10000
+  ia:
+    cle-api: test
+  stockage:
+    repertoire: ${java.io.tmpdir}/wiriwiri-tests
+    url-publique: http://localhost/fichiers

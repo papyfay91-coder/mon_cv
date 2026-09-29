@@ -1,0 +1,15 @@
+# Reverse proxy HTTPS : certificats Let's Encrypt automatiques, TLS 1.3 uniquement.
+{$DOMAINE_API} {
+	tls {
+		protocols tls1.3
+	}
+	reverse_proxy backend:8080
+}
+
+{$DOMAINE_VITRINE} {
+	tls {
+		protocols tls1.3
+	}
+	encode zstd gzip
+	reverse_proxy vitrine:3000
+}
