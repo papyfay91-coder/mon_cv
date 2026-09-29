@@ -1,47 +1,40 @@
-import { StyleSheet } from 'react-native';
-
+/** Jeton de design : une seule source pour les couleurs, espacements, rayons et typographies. */
 export const couleurs = {
-  fond: '#fffaf3',
-  texte: '#1d1b16',
-  doux: '#6b645a',
-  carte: '#ffffff',
-  bord: '#eadfce',
-  accent: '#0e7c5a',
-  danger: '#b3261e',
-  enregistrement: '#d93025',
+  marque: '#0B6E4F',
+  marqueFonce: '#064733',
+  marqueClair: '#E6F2EC',
+  accent: '#F2A93B',
+  accentClair: '#FDF3E1',
+  fond: '#F5F6F8',
+  surface: '#FFFFFF',
+  bord: '#E6E8EC',
+  bordFort: '#CFD4DC',
+  texte: '#101828',
+  texte2: '#475467',
+  texte3: '#98A2B3',
+  danger: '#D92D20',
+  dangerClair: '#FEF3F2',
+  succes: '#079455',
+  succesClair: '#ECFDF3',
+  enregistrement: '#E5484D',
+  blanc: '#FFFFFF',
 };
 
-export const styles = StyleSheet.create({
-  ecran: { flex: 1, backgroundColor: couleurs.fond, padding: 20, gap: 16 },
-  titre: { fontSize: 26, fontWeight: '700', color: couleurs.texte },
-  texte: { fontSize: 17, color: couleurs.texte, lineHeight: 24 },
-  doux: { fontSize: 14, color: couleurs.doux },
-  champ: {
-    fontSize: 20,
-    padding: 16,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: couleurs.bord,
-    backgroundColor: couleurs.carte,
-    color: couleurs.texte,
-  },
-  bouton: {
-    backgroundColor: couleurs.accent,
-    padding: 18,
-    borderRadius: 14,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 10,
-  },
-  boutonTexte: { color: '#fff', fontSize: 19, fontWeight: '700' },
-  boutonSecondaire: {
-    padding: 16,
-    borderRadius: 14,
-    borderWidth: 2,
-    borderColor: couleurs.accent,
-    alignItems: 'center',
-  },
-  boutonSecondaireTexte: { color: couleurs.accent, fontSize: 17, fontWeight: '600' },
-  erreur: { color: couleurs.danger, fontSize: 15 },
-});
+export const espace = { xs: 4, s: 8, m: 12, l: 16, xl: 24, xxl: 32 };
+
+export const rayon = { s: 10, m: 14, l: 20, xl: 28, rond: 999 };
+
+export const typo = {
+  titre: { fontSize: 28, lineHeight: 34, fontWeight: '800' as const, color: couleurs.texte, letterSpacing: -0.5 },
+  h2: { fontSize: 20, lineHeight: 26, fontWeight: '700' as const, color: couleurs.texte, letterSpacing: -0.2 },
+  h3: { fontSize: 16, lineHeight: 22, fontWeight: '700' as const, color: couleurs.texte },
+  corps: { fontSize: 16, lineHeight: 23, color: couleurs.texte2 },
+  label: { fontSize: 14, lineHeight: 20, fontWeight: '600' as const, color: couleurs.texte },
+  petit: { fontSize: 13, lineHeight: 18, color: couleurs.texte3 },
+};
+
+export const ombre = {
+  douce: { boxShadow: '0px 2px 8px rgba(16, 24, 40, 0.06)' },
+  moyenne: { boxShadow: '0px 8px 24px rgba(16, 24, 40, 0.10)' },
+  forte: { boxShadow: '0px 12px 32px rgba(6, 71, 51, 0.30)' },
+};

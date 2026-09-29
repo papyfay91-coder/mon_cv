@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { api, Boutique, ErreurApi, jeton } from './api';
 import Connexion from './ecrans/Connexion';
 import Consentement from './ecrans/Consentement';
@@ -43,8 +43,8 @@ export default function App() {
   switch (ecran) {
     case 'chargement':
       contenu = (
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-          <ActivityIndicator size="large" color={couleurs.accent} />
+        <View style={{ flex: 1, justifyContent: 'center', backgroundColor: couleurs.fond }}>
+          <ActivityIndicator size="large" color={couleurs.marque} />
         </View>
       );
       break;
@@ -94,10 +94,8 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={{ flex: 1, backgroundColor: couleurs.fond }}>
-        <StatusBar style="dark" />
-        {contenu}
-      </SafeAreaView>
+      <StatusBar style={ecran === 'connexion' ? 'light' : 'dark'} />
+      {contenu}
     </SafeAreaProvider>
   );
 }

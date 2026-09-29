@@ -1,7 +1,15 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { api, Boutique } from '../api';
-import { styles } from '../theme';
+import { espace, typo } from '../theme';
+import { Bouton, Carte, Ecran, Message, NomIcone, Pictogramme } from '../ui';
+
+const POINTS: { icone: NomIcone; titre: string; texte: string }[] = [
+  { icone: 'mic-outline', titre: 'Un seul usage', texte: 'Le micro sert uniquement à remplir la fiche de votre article : nom, prix, taille.' },
+  { icone: 'cloud-outline', titre: 'Transcription par IA', texte: 'Votre note vocale est transcrite par OpenAI, sur des serveurs situés hors du Sénégal.' },
+  { icone: 'trash-outline', titre: 'Jamais conservée', texte: 'L\'enregistrement est supprimé dès que la fiche est remplie.' },
+  { icone: 'options-outline', titre: 'Vous gardez la main', texte: 'Vous vérifiez chaque fiche, et pouvez retirer votre accord à tout moment dans les Paramètres.' },
+];
 
 /**
  * Consentement explicite et éclairé (CDP) AVANT toute lecture du micro ou envoi d'audio.
@@ -11,34 +19,56 @@ export default function Consentement({ onAccepte, onRefuse }: {
   onAccepte: (b: Boutique) => void;
   onRefuse: () => void;
 }) {
+  const [attente, setAttente] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
 
   const accepter = async () => {
+    setAttente(true);
+    setErreur(null);
     try {
       onAccepte(await api.consentir());
     } catch {
-      setErreur('Pas de connexion internet. Réessayez.');
+      setErreur('Connexion impossible. Réessayez.');
+      setAttente(false);
     }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.ecran}>
-      <Text style={{ fontSize: 48, textAlign: 'center' }}>🎙️🔒</Text>
-      <Text style={styles.titre}>Votre voix, vos données</Text>
-      <View style={{ gap: 12 }}>
-        <Text style={styles.texte}>• Le micro sert <Text style={{ fontWeight: '700' }}>uniquement</Text> à remplir la fiche de votre article (nom, prix, taille).</Text>
-        <Text style={styles.texte}>• Votre note vocale est transcrite par un service d&apos;intelligence artificielle (OpenAI, serveurs situés hors du Sénégal), puis <Text style={{ fontWeight: '700' }}>supprimée</Text> : elle n&apos;est jamais conservée.</Text>
-        <Text style={styles.texte}>• Vous vérifiez toujours la fiche avant de la publier.</Text>
-        <Text style={styles.texte}>• Vous pouvez retirer votre accord, ou supprimer votre compte et toutes vos données, à tout moment dans ⚙️ Paramètres.</Text>
-        <Text style={styles.doux}>Traitement conforme à la loi sénégalaise n° 2008-12 sur les données personnelles (CDP).</Text>
+    <Ecran pied={
+      <View style={{ gap: espace.s }}>
+        <Bouton titre="J'accepte et je continue" onPress={accepter} chargement={attente} testID="bouton-accepter" />
+        <Bouton titre="Continuer sans la voix" variante="fantome" onPress={onRefuse} />
       </View>
-      <Pressable style={styles.bouton} onPress={accepter}>
-        <Text style={styles.boutonTexte}>J&apos;ai compris et j&apos;accepte ✅</Text>
-      </Pressable>
-      <Pressable style={styles.boutonSecondaire} onPress={onRefuse}>
-        <Text style={styles.boutonSecondaireTexte}>Non merci, je remplis à la main</Text>
-      </Pressable>
-      {erreur && <Text style={styles.erreur}>{erreur}</Text>}
-    </ScrollView>
+    }>
+      <View style={{ alignItems: 'center', gap: espace.m, paddingTop: espace.l }}>
+        <Pictogramme icone="shield-checkmark" taille={72} />
+        <Text style={[typo.titre, { textAlign: 'center' }]}>Votre voix, vos données</Text>
+        <Text style={[typo.corps, { textAlign: 'center' }]}>
+          Décrivez vos articles à voix haute, en wolof. Voici comment votre voix est utilisée.
+        </Text>
+      </View>
+
+      <Carte style={{ gap: espace.l }}>
+        {POINTS.map((p) => (
+          <View key={p.titre} style={styles.ligne}>
+            <Pictogramme icone={p.icone} taille={40} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={typo.h3}>{p.titre}</Text>
+              <Text style={[typo.corps, { fontSize: 15, lineHeight: 21 }]}>{p.texte}</Text>
+            </View>
+          </View>
+        ))}
+      </Carte>
+
+      <Text style={[typo.petit, { textAlign: 'center' }]}>
+        Traitement conforme à la loi sénégalaise n° 2008-12 sur les données personnelles (CDP).
+      </Text>
+      {erreur && <Message type="erreur" texte={erreur} />}
+    </Ecran>
   );
 }
+
+const styles = StyleSheet.create({
+  ligne: { flexDirection: 'row', gap: espace.m, alignItems: 'flex-start' },
+});
+

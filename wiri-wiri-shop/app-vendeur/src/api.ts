@@ -1,4 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 
 export const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://10.0.2.2:8080';
 export const VITRINE_URL = process.env.EXPO_PUBLIC_VITRINE_URL ?? 'http://localhost:3000';
@@ -58,8 +59,17 @@ async function requete<T>(chemin: string, options: RequestInit = {}): Promise<T>
   return corps as T;
 }
 
-/** Pièce jointe multipart au format attendu par React Native. */
-const fichier = (uri: string, name: string, type: string) => ({ uri, name, type }) as unknown as Blob;
+/**
+ * Pièce jointe multipart : React Native (iOS / Android) attend { uri, name, type } ;
+ * le navigateur (aperçu web) attend un vrai Blob.
+ */
+async function joindre(donnees: FormData, champ: string, uri: string, name: string, type: string) {
+  if (Platform.OS === 'web') {
+    donnees.append(champ, await (await fetch(uri)).blob(), name);
+  } else {
+    donnees.append(champ, { uri, name, type } as unknown as Blob);
+  }
+}
 
 export const api = {
   demanderCode: (telephone: string) =>
@@ -80,20 +90,20 @@ export const api = {
 
   produits: () => requete<Produit[]>('/api/vendeur/produits'),
 
-  analyserNoteVocale: (uriAudio: string) => {
+  analyserNoteVocale: async (uriAudio: string) => {
     const donnees = new FormData();
     const wav = uriAudio.toLowerCase().endsWith('.wav');
-    donnees.append('audio', fichier(uriAudio, wav ? 'note.wav' : 'note.m4a', wav ? 'audio/wav' : 'audio/mp4'));
+    await joindre(donnees, 'audio', uriAudio, wav ? 'note.wav' : 'note.m4a', wav ? 'audio/wav' : 'audio/mp4');
     return requete<Extraction>('/api/vendeur/produits/analyse-vocale', { method: 'POST', body: donnees });
   },
 
-  publierProduit: (p: { nomProduit: string; prix: number; taille?: string; uriImage: string; typeImage?: string }) => {
+  publierProduit: async (p: { nomProduit: string; prix: number; taille?: string; uriImage: string; typeImage?: string }) => {
     const donnees = new FormData();
     donnees.append('nomProduit', p.nomProduit);
     donnees.append('prix', String(p.prix));
     if (p.taille) donnees.append('taille', p.taille);
     const type = p.typeImage ?? 'image/jpeg';
-    donnees.append('image', fichier(p.uriImage, `photo.${type.split('/')[1] ?? 'jpg'}`, type));
+    await joindre(donnees, 'image', p.uriImage, `photo.${type.split('/')[1] ?? 'jpg'}`, type);
     return requete<Produit>('/api/vendeur/produits', { method: 'POST', body: donnees });
   },
 

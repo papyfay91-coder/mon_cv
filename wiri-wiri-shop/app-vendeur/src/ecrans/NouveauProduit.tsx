@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import {
   AudioModule,
   RecordingPresets,
@@ -6,16 +7,18 @@ import {
   useAudioRecorderState,
 } from 'expo-audio';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
-import { ActivityIndicator, Image, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Animated, Easing, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { api, ErreurApi } from '../api';
-import { couleurs, styles } from '../theme';
+import { couleurs, espace, ombre, rayon, typo } from '../theme';
+import { Bouton, Carte, Champ, Ecran, EnTete, Message, Pictogramme, vibrer } from '../ui';
 
 /**
  * Création d'une fiche en ~5 secondes :
- * 1. 📸 photo de l'article ;
- * 2. 🎙️ le vendeur décrit l'article en wolof (appui maintenu) → l'IA pré-remplit nom / prix / taille ;
- * 3. ✅ le vendeur vérifie et publie.
+ * 1. photo de l'article ;
+ * 2. le vendeur décrit l'article en wolof (appui maintenu) → l'IA pré-remplit nom / prix / taille ;
+ * 3. le vendeur vérifie et publie.
  */
 export default function NouveauProduit({ vocalAutorise, onDemanderConsentement, onTermine }: {
   vocalAutorise: boolean;
@@ -31,11 +34,11 @@ export default function NouveauProduit({ vocalAutorise, onDemanderConsentement, 
   const [taille, setTaille] = useState('');
   const [transcription, setTranscription] = useState<string | null>(null);
   const [attente, setAttente] = useState<null | 'analyse' | 'publication'>(null);
-  const [erreur, setErreur] = useState<string | null>(null);
+  const [message, setMessage] = useState<{ type: 'erreur' | 'info'; texte: string } | null>(null);
 
   const prendrePhoto = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
-    if (!permission.granted) return setErreur('Autorisez l\'appareil photo dans les réglages.');
+    if (!permission.granted) return setMessage({ type: 'erreur', texte: 'Autorisez l\'appareil photo dans les réglages.' });
     const resultat = await ImagePicker.launchCameraAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
@@ -47,9 +50,10 @@ export default function NouveauProduit({ vocalAutorise, onDemanderConsentement, 
   };
 
   const commencerEnregistrement = async () => {
-    setErreur(null);
+    setMessage(null);
     const permission = await AudioModule.requestRecordingPermissionsAsync();
-    if (!permission.granted) return setErreur('Autorisez le micro dans les réglages.');
+    if (!permission.granted) return setMessage({ type: 'erreur', texte: 'Autorisez le micro dans les réglages.' });
+    vibrer();
     await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
     await enregistreur.prepareToRecordAsync();
     enregistreur.record();
@@ -59,6 +63,7 @@ export default function NouveauProduit({ vocalAutorise, onDemanderConsentement, 
     if (!etatEnregistreur.isRecording) return;
     await enregistreur.stop();
     await setAudioModeAsync({ allowsRecording: false });
+    vibrer();
     const uri = enregistreur.uri;
     if (!uri) return;
     setAttente('analyse');
@@ -68,20 +73,20 @@ export default function NouveauProduit({ vocalAutorise, onDemanderConsentement, 
       if (resultat.nomProduit) setNom(resultat.nomProduit);
       if (resultat.prix) setPrix(String(resultat.prix));
       if (resultat.taille) setTaille(resultat.taille);
-      if (!resultat.complet) setErreur('Je n\'ai pas tout compris : complétez les champs vides.');
+      if (!resultat.complet) setMessage({ type: 'info', texte: 'Je n\'ai pas tout compris : complétez les champs vides.' });
     } catch (e) {
-      setErreur(e instanceof ErreurApi ? e.message : 'Pas de connexion internet.');
+      setMessage({ type: 'erreur', texte: e instanceof ErreurApi ? e.message : 'Connexion impossible. Réessayez.' });
     }
     setAttente(null);
   };
 
+  const montant = Number(prix);
+  const valide = !!photo && nom.trim().length > 0 && Number.isInteger(montant) && montant > 0;
+
   const publier = async () => {
-    const montant = Number(prix);
-    if (!photo || nom.trim().length === 0 || !Number.isInteger(montant) || montant <= 0) {
-      return setErreur('Il faut une photo, un nom et un prix.');
-    }
+    if (!photo || !valide) return;
     setAttente('publication');
-    setErreur(null);
+    setMessage(null);
     try {
       await api.publierProduit({
         nomProduit: nom.trim(),
@@ -92,62 +97,175 @@ export default function NouveauProduit({ vocalAutorise, onDemanderConsentement, 
       });
       onTermine();
     } catch (e) {
-      setErreur(e instanceof ErreurApi ? e.message : 'Pas de connexion internet.');
+      setMessage({ type: 'erreur', texte: e instanceof ErreurApi ? e.message : 'Connexion impossible. Réessayez.' });
       setAttente(null);
     }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.ecran} keyboardShouldPersistTaps="handled">
-      <Pressable onPress={onTermine} hitSlop={16}><Text style={styles.doux}>← Retour</Text></Pressable>
+    <Ecran pied={
+      <Bouton titre="Publier l'article" icone="checkmark-circle" onPress={publier} desactive={!valide || attente !== null}
+              chargement={attente === 'publication'} testID="bouton-publier" />
+    }>
+      <EnTete titre="Nouvel article" onRetour={onTermine} />
 
-      <Pressable onPress={prendrePhoto}
-                 style={{ aspectRatio: 1, borderRadius: 16, backgroundColor: couleurs.bord, overflow: 'hidden',
-                          alignItems: 'center', justifyContent: 'center' }}>
-        {photo ? <Image source={{ uri: photo.uri }} style={{ width: '100%', height: '100%' }} />
-               : <Text style={{ fontSize: 64 }}>📸</Text>}
+      {/* 1. Photo */}
+      <Pressable onPress={prendrePhoto} accessibilityRole="button" accessibilityLabel="Prendre une photo"
+                 style={({ pressed }) => [styles.photo, !photo && styles.photoVide, pressed && { opacity: 0.9 }]}>
+        {photo ? (
+          <>
+            <Image source={{ uri: photo.uri }} style={StyleSheet.absoluteFill} />
+            <View style={styles.reprendre}>
+              <Ionicons name="camera-reverse-outline" size={16} color={couleurs.texte} />
+              <Text style={styles.reprendreTexte}>Reprendre</Text>
+            </View>
+          </>
+        ) : (
+          <View style={{ alignItems: 'center', gap: espace.s }}>
+            <Pictogramme icone="camera" taille={64} />
+            <Text style={typo.h3}>Prendre une photo</Text>
+            <Text style={typo.petit}>Fond clair, article bien centré</Text>
+          </View>
+        )}
       </Pressable>
 
+      {/* 2. Voix */}
       {vocalAutorise ? (
-        <Pressable
-          onPressIn={commencerEnregistrement}
-          onPressOut={terminerEnregistrement}
-          disabled={attente !== null}
-          style={[styles.bouton, { paddingVertical: 26 },
-                  etatEnregistreur.isRecording && { backgroundColor: couleurs.enregistrement }]}
-          accessibilityLabel="Maintenir pour parler">
-          <Text style={[styles.boutonTexte, { fontSize: 22 }]}>
-            {etatEnregistreur.isRecording
-              ? `🔴 Je vous écoute… ${Math.round(etatEnregistreur.durationMillis / 1000)} s`
-              : '🎙️ Maintenez et décrivez'}
-          </Text>
-        </Pressable>
+        <Carte style={styles.voix}>
+          <BoutonMicro enregistre={etatEnregistreur.isRecording} occupe={attente !== null}
+                       onDebut={commencerEnregistrement} onFin={terminerEnregistrement} />
+          <View style={{ flex: 1, gap: 4 }}>
+            {attente === 'analyse' ? (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: espace.s }}>
+                <ActivityIndicator color={couleurs.marque} />
+                <Text style={typo.h3}>Analyse en cours…</Text>
+              </View>
+            ) : etatEnregistreur.isRecording ? (
+              <>
+                <Text style={[typo.h3, { color: couleurs.enregistrement }]}>
+                  Je vous écoute · {Math.round(etatEnregistreur.durationMillis / 1000)} s
+                </Text>
+                <Text style={typo.petit}>Relâchez quand vous avez fini</Text>
+              </>
+            ) : (
+              <>
+                <Text style={typo.h3}>Décrivez en wolof</Text>
+                <Text style={typo.petit}>Maintenez le micro : nom, prix et taille de l&apos;article</Text>
+              </>
+            )}
+          </View>
+        </Carte>
       ) : (
-        <Pressable style={styles.boutonSecondaire} onPress={onDemanderConsentement}>
-          <Text style={styles.boutonSecondaireTexte}>🎙️ Activer la saisie vocale</Text>
+        <Pressable onPress={onDemanderConsentement} accessibilityRole="button">
+          <Carte style={styles.voix}>
+            <Pictogramme icone="mic-off-outline" taille={48} fond={couleurs.fond} teinte={couleurs.texte2} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={typo.h3}>Saisie vocale désactivée</Text>
+              <Text style={[typo.petit, { color: couleurs.marque, fontWeight: '600' }]}>Activer →</Text>
+            </View>
+          </Carte>
         </Pressable>
       )}
 
-      {attente === 'analyse' && (
-        <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
-          <ActivityIndicator color={couleurs.accent} />
-          <Text style={styles.doux}>Analyse de votre voix…</Text>
+      {transcription ? (
+        <View style={styles.transcription}>
+          <Ionicons name="chatbubble-ellipses-outline" size={18} color={couleurs.texte2} />
+          <Text style={[typo.corps, { flex: 1, fontStyle: 'italic', fontSize: 15 }]}>« {transcription} »</Text>
         </View>
-      )}
-      {transcription ? <Text style={styles.doux}>« {transcription} »</Text> : null}
+      ) : null}
 
-      <TextInput style={styles.champ} placeholder="🏷️ Nom de l'article" value={nom} onChangeText={setNom} maxLength={150} />
-      <TextInput style={styles.champ} placeholder="💰 Prix (FCFA)" keyboardType="number-pad" value={prix}
-                 onChangeText={(t) => setPrix(t.replace(/\D/g, ''))} maxLength={9} />
-      <TextInput style={styles.champ} placeholder="📏 Taille (facultatif)" value={taille} onChangeText={setTaille}
-                 maxLength={20} />
+      {message && <Message type={message.type} texte={message.texte} />}
 
-      {erreur && <Text style={styles.erreur}>{erreur}</Text>}
-
-      <Pressable style={styles.bouton} onPress={publier} disabled={attente !== null}>
-        {attente === 'publication' ? <ActivityIndicator color="#fff" />
-                                   : <Text style={styles.boutonTexte}>✅ Publier</Text>}
-      </Pressable>
-    </ScrollView>
+      {/* 3. Fiche */}
+      <View style={{ gap: espace.l }}>
+        <Champ label="Nom de l'article" placeholder="Ex. Robe wax" value={nom} onChangeText={setNom} maxLength={150}
+               testID="champ-nom-produit" />
+        <View style={{ flexDirection: 'row', gap: espace.m }}>
+          <View style={{ flex: 3 }}>
+            <Champ label="Prix" placeholder="15 000" keyboardType="number-pad" suffixe="FCFA" maxLength={11}
+                   value={prix.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} onChangeText={(t) => setPrix(t.replace(/\D/g, ''))} testID="champ-prix" />
+          </View>
+          <View style={{ flex: 2 }}>
+            <Champ label="Taille" placeholder="M, 42…" value={taille} onChangeText={setTaille} maxLength={20} />
+          </View>
+        </View>
+      </View>
+    </Ecran>
   );
 }
+
+/** Gros bouton rond « appuyer pour parler », avec une onde qui pulse pendant l'enregistrement. */
+function BoutonMicro({ enregistre, occupe, onDebut, onFin }: {
+  enregistre: boolean;
+  occupe: boolean;
+  onDebut: () => void;
+  onFin: () => void;
+}) {
+  const onde = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (!enregistre) {
+      onde.stopAnimation();
+      onde.setValue(0);
+      return;
+    }
+    const boucle = Animated.loop(Animated.timing(onde, {
+      toValue: 1, duration: 1200, easing: Easing.out(Easing.ease), useNativeDriver: true,
+    }));
+    boucle.start();
+    return () => boucle.stop();
+  }, [enregistre, onde]);
+
+  const couleur = enregistre ? couleurs.enregistrement : couleurs.marque;
+  return (
+    <Pressable onPressIn={onDebut} onPressOut={onFin} disabled={occupe} accessibilityRole="button"
+               accessibilityLabel="Maintenir pour parler" style={{ width: 72, height: 72 }}>
+      <Animated.View pointerEvents="none" style={[styles.onde, {
+        backgroundColor: couleur,
+        opacity: onde.interpolate({ inputRange: [0, 1], outputRange: [0.35, 0] }),
+        transform: [{ scale: onde.interpolate({ inputRange: [0, 1], outputRange: [1, 1.7] }) }],
+      }]} />
+      <LinearGradient colors={enregistre ? [couleurs.enregistrement, '#B42318'] : [couleurs.marque, couleurs.marqueFonce]}
+                      style={[styles.micro, ombre.forte, occupe && { opacity: 0.5 }]}>
+        <Ionicons name={enregistre ? 'radio-button-on' : 'mic'} size={32} color={couleurs.blanc} />
+      </LinearGradient>
+    </Pressable>
+  );
+}
+
+const styles = StyleSheet.create({
+  photo: {
+    aspectRatio: 1,
+    borderRadius: rayon.l,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: couleurs.surface,
+  },
+  photoVide: { borderWidth: 2, borderStyle: 'dashed', borderColor: couleurs.bordFort },
+  reprendre: {
+    position: 'absolute',
+    bottom: espace.m,
+    right: espace.m,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: espace.m,
+    paddingVertical: espace.s,
+    borderRadius: rayon.rond,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+  },
+  reprendreTexte: { fontSize: 14, fontWeight: '600', color: couleurs.texte },
+  voix: { flexDirection: 'row', alignItems: 'center', gap: espace.l },
+  onde: { position: 'absolute', width: 72, height: 72, borderRadius: 36 },
+  micro: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center' },
+  transcription: {
+    flexDirection: 'row',
+    gap: espace.s,
+    padding: espace.m,
+    borderRadius: rayon.m,
+    backgroundColor: couleurs.surface,
+    borderLeftWidth: 3,
+    borderLeftColor: couleurs.accent,
+  },
+});
