@@ -9,6 +9,7 @@ directement le vendeur par Wave ou Orange Money.
 wiri-wiri-shop/
 ├── backend/        API Spring Boot 3 (Java 17) · PostgreSQL · Flyway
 ├── vitrine-web/    Vitrine client Next.js 15 (rendu serveur + cache 60 s, ~105 ko de JS)
+├── ia-locale/      Transcription Whisper locale + guide Ollama (IA gratuite, sans clé)
 ├── app-vendeur/    Application vendeur React Native (Expo SDK 57, compatible Expo Go actuel)
 ├── docker-compose.yml, Caddyfile   Déploiement (PostgreSQL + API + vitrine + HTTPS TLS 1.3)
 ```
@@ -22,6 +23,7 @@ cd backend
 export DB_URL=jdbc:postgresql://localhost:5432/wiriwiri DB_USER=wiriwiri DB_PASSWORD=...
 export JWT_SECRET=$(openssl rand -base64 32) AES_KEY=$(openssl rand -base64 32) OTP_PEPPER=$(openssl rand -base64 32)
 export OPENAI_API_KEY=sk-...        # facultatif : sans clé, l'analyse vocale répond 503
+# ou, IA gratuite en local (voir ia-locale/README.md) : export SPRING_PROFILES_ACTIVE=ia-locale
 mvn spring-boot:run                  # le schéma est créé par Flyway
 mvn test                             # 22 tests (H2 en mode PostgreSQL)
 ```

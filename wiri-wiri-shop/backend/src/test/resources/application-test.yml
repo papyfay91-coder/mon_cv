@@ -18,7 +18,10 @@ wiriwiri:
     requetes-par-minute: 10000
     auth-requetes-par-minute: 10000
   ia:
-    cle-api: test
+    transcription:
+      cle-api: test
+    extraction:
+      cle-api: test
   stockage:
     repertoire: ${java.io.tmpdir}/wiriwiri-tests
     url-publique: http://localhost/fichiers

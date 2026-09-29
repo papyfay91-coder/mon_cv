@@ -1,10 +1,12 @@
 package sn.wiriwiri.shop.ia;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.headerDoesNotExist;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
@@ -19,9 +21,15 @@ import sn.wiriwiri.shop.config.WiriWiriProperties;
 
 class ClientsIaTest {
 
-    private final WiriWiriProperties proprietes = new WiriWiriProperties(null, null,
-            new WiriWiriProperties.Ia("https://api.test/v1", "cle", "whisper-1", "wo", "gpt-4o-mini", Duration.ofSeconds(5)),
-            null);
+    private final WiriWiriProperties proprietes = proprietes(
+            new WiriWiriProperties.Service("https://api.test/v1", "cle", "whisper-1"),
+            new WiriWiriProperties.Service("https://api.test/v1", "cle", "gpt-4o-mini"));
+
+    private static WiriWiriProperties proprietes(WiriWiriProperties.Service transcription,
+                                                 WiriWiriProperties.Service extraction) {
+        return new WiriWiriProperties(null, null,
+                new WiriWiriProperties.Ia(transcription, extraction, "wo", Duration.ofSeconds(5)), null);
+    }
 
     private final RestClient.Builder builder = RestClient.builder()
             .baseUrl("https://api.test/v1")
@@ -59,5 +67,32 @@ class ClientsIaTest {
 
         assertThat(new LlmExtracteur(client, proprietes).extraireJson("Robe bu bees")).isEqualTo("{\"prix\":1000}");
         serveur.verify();
+    }
+
+    @Test
+    void serveurLocalSansCleFonctionne() {
+        RestClient.Builder local = RestClient.builder().baseUrl("http://localhost:11434/v1");
+        MockRestServiceServer ollama = MockRestServiceServer.bindTo(local).build();
+        ollama.expect(requestTo("http://localhost:11434/v1/chat/completions"))
+                .andExpect(headerDoesNotExist("Authorization"))
+                .andExpect(jsonPath("$.model").value("qwen2.5:7b"))
+                .andRespond(withSuccess("{\"choices\":[{\"message\":{\"content\":\"{}\"}}]}", MediaType.APPLICATION_JSON));
+
+        var config = proprietes(
+                new WiriWiriProperties.Service("http://localhost:9000/v1", "", "small"),
+                new WiriWiriProperties.Service("http://localhost:11434/v1", "", "qwen2.5:7b"));
+        assertThat(new LlmExtracteur(local.build(), config).extraireJson("Robe")).isEqualTo("{}");
+        ollama.verify();
+    }
+
+    @Test
+    void openAiSansCleEstIndisponible() {
+        var config = proprietes(
+                new WiriWiriProperties.Service("https://api.openai.com/v1", "", "whisper-1"),
+                new WiriWiriProperties.Service("https://api.openai.com/v1", null, "gpt-4o-mini"));
+        assertThatThrownBy(() -> new WhisperTranscripteur(client, config).transcrire(new byte[]{1}, "n.wav", "audio/wav"))
+                .isInstanceOf(IaIndisponibleException.class);
+        assertThatThrownBy(() -> new LlmExtracteur(client, config).extraireJson("x"))
+                .isInstanceOf(IaIndisponibleException.class);
     }
 }

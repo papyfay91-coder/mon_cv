@@ -5,33 +5,37 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import sn.wiriwiri.shop.config.WiriWiriProperties;
 
-/** Extraction structurée via l'API Chat Completions, en mode de réponse JSON strict. */
+/**
+ * Extraction structurée via un service compatible Chat Completions, en mode de réponse JSON :
+ * l'API d'OpenAI, ou Ollama en local et gratuit.
+ */
 @Component
 public class LlmExtracteur implements ExtracteurLlm {
 
     private static final Logger LOG = LoggerFactory.getLogger(LlmExtracteur.class);
 
     private final RestClient client;
-    private final WiriWiriProperties.Ia config;
+    private final WiriWiriProperties.Service service;
 
-    public LlmExtracteur(RestClient restClientIa, WiriWiriProperties proprietes) {
-        this.client = restClientIa;
-        this.config = proprietes.ia();
+    public LlmExtracteur(@Qualifier("restClientExtraction") RestClient client, WiriWiriProperties proprietes) {
+        this.client = client;
+        this.service = proprietes.ia().extraction();
     }
 
     @Override
     public String extraireJson(String transcription) {
-        if (config.cleApi() == null || config.cleApi().isBlank()) {
+        if (!service.estConfigure()) {
             throw new IaIndisponibleException("Service d'extraction non configuré.");
         }
         Map<String, Object> requete = Map.of(
-                "model", config.modeleExtraction(),
+                "model", service.modele(),
                 "temperature", 0,
                 "response_format", Map.of("type", "json_object"),
                 "messages", List.of(

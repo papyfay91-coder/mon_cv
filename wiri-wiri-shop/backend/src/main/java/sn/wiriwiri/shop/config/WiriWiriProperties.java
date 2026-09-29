@@ -36,13 +36,30 @@ public record WiriWiriProperties(
             @Min(1) int authRequetesParMinute) {
     }
 
+    /**
+     * Deux services indépendants, chacun compatible avec l'API OpenAI : OpenAI lui-même,
+     * ou des serveurs locaux gratuits (Whisper pour la transcription, Ollama pour l'extraction).
+     */
     public record Ia(
+            @Valid @NotNull Service transcription,
+            @Valid @NotNull Service extraction,
+            String langue,
+            @NotNull Duration delai) {
+    }
+
+    public record Service(
             @NotBlank String baseUrl,
             String cleApi,
-            @NotBlank String modeleTranscription,
-            String langue,
-            @NotBlank String modeleExtraction,
-            @NotNull Duration delai) {
+            @NotBlank String modele) {
+
+        public boolean aUneCle() {
+            return cleApi != null && !cleApi.isBlank();
+        }
+
+        /** Une clé n'est exigée que pour l'API hébergée d'OpenAI ; un serveur local n'en a pas besoin. */
+        public boolean estConfigure() {
+            return aUneCle() || !baseUrl.contains("api.openai.com");
+        }
     }
 
     public record Stockage(

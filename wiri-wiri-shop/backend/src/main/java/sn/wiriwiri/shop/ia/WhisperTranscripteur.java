@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -16,8 +17,9 @@ import org.springframework.web.client.RestClientException;
 import sn.wiriwiri.shop.config.WiriWiriProperties;
 
 /**
- * Transcription via l'API OpenAI Whisper (/audio/transcriptions), langue "wo" (Wolof).
- * Si l'API rejette le code langue, on relance en détection automatique plutôt que d'échouer.
+ * Transcription via un service compatible OpenAI (/audio/transcriptions), langue "wo" (wolof) :
+ * l'API Whisper d'OpenAI, ou le serveur Whisper local et gratuit (ia-locale/).
+ * Si le service rejette le code langue, on relance en détection automatique plutôt que d'échouer.
  */
 @Component
 public class WhisperTranscripteur implements Transcripteur {
@@ -28,19 +30,21 @@ public class WhisperTranscripteur implements Transcripteur {
     private static final String AMORCE = "Wolof, Dakar. Njëg bi, dërëm, junni, FCFA, taille, robe, sabador, basket.";
 
     private final RestClient client;
-    private final WiriWiriProperties.Ia config;
+    private final WiriWiriProperties.Service service;
+    private final String langueParDefaut;
 
-    public WhisperTranscripteur(RestClient restClientIa, WiriWiriProperties proprietes) {
-        this.client = restClientIa;
-        this.config = proprietes.ia();
+    public WhisperTranscripteur(@Qualifier("restClientTranscription") RestClient client, WiriWiriProperties proprietes) {
+        this.client = client;
+        this.service = proprietes.ia().transcription();
+        this.langueParDefaut = proprietes.ia().langue();
     }
 
     @Override
     public String transcrire(byte[] audio, String nomFichier, String typeMime) {
-        if (config.cleApi() == null || config.cleApi().isBlank()) {
+        if (!service.estConfigure()) {
             throw new IaIndisponibleException("Service de transcription non configuré.");
         }
-        String langue = config.langue();
+        String langue = langueParDefaut;
         try {
             return appeler(audio, nomFichier, typeMime, langue);
         } catch (HttpClientErrorException.BadRequest e) {
@@ -66,7 +70,7 @@ public class WhisperTranscripteur implements Transcripteur {
         };
         MultiValueMap<String, Object> corps = new LinkedMultiValueMap<>();
         corps.add("file", new HttpEntity<>(ressource, entetesFichier));
-        corps.add("model", config.modeleTranscription());
+        corps.add("model", service.modele());
         corps.add("response_format", "json");
         corps.add("temperature", "0");
         corps.add("prompt", AMORCE);

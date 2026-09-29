@@ -53,14 +53,19 @@ wiriwiri:
     requetes-par-minute: ${RATE_LIMIT_GLOBAL:120}
     auth-requetes-par-minute: ${RATE_LIMIT_AUTH:5}
   ia:
-    base-url: ${OPENAI_BASE_URL:https://api.openai.com/v1}
-    cle-api: ${OPENAI_API_KEY:}
-    modele-transcription: ${WHISPER_MODEL:whisper-1}
-    # Code langue ISO-639-1 envoyé à Whisper. Si l'API refuse la langue,
-    # le service relance automatiquement en détection automatique.
+    # Par défaut : API OpenAI (payante). Version gratuite en local : profil "ia-locale".
+    transcription:
+      base-url: ${TRANSCRIPTION_URL:https://api.openai.com/v1}
+      cle-api: ${TRANSCRIPTION_API_KEY:${OPENAI_API_KEY:}}
+      modele: ${WHISPER_MODEL:whisper-1}
+    extraction:
+      base-url: ${EXTRACTION_URL:https://api.openai.com/v1}
+      cle-api: ${EXTRACTION_API_KEY:${OPENAI_API_KEY:}}
+      modele: ${LLM_MODEL:gpt-4o-mini}
+    # Code langue ISO-639-1 envoyé à Whisper. Si le service refuse la langue,
+    # le backend relance automatiquement en détection automatique.
     langue: ${WHISPER_LANGUE:wo}
-    modele-extraction: ${LLM_MODEL:gpt-4o-mini}
-    delai: PT60S
+    delai: ${IA_DELAI:PT60S}
   stockage:
     repertoire: ${STORAGE_DIR:./data/uploads}
     url-publique: ${STORAGE_PUBLIC_URL:http://localhost:8080/fichiers}

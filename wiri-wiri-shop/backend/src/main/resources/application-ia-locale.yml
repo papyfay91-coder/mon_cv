@@ -1,0 +1,16 @@
+# IA 100 % gratuite, sur la machine : aucune clé, aucune donnée envoyée à l'extérieur.
+#   - transcription : serveur Whisper local (dossier ia-locale/ du projet), port 9000
+#   - extraction    : Ollama, port 11434, avec un modèle libre
+# Activer avec SPRING_PROFILES_ACTIVE=ia-locale (voir wiri-wiri-shop/ia-locale/README.md).
+wiriwiri:
+  ia:
+    transcription:
+      base-url: ${TRANSCRIPTION_URL:http://localhost:9000/v1}
+      cle-api: ""
+      modele: ${WHISPER_MODEL:small}
+    extraction:
+      base-url: ${EXTRACTION_URL:http://localhost:11434/v1}
+      cle-api: ""
+      modele: ${LLM_MODEL:qwen2.5:7b}
+    # Les modèles locaux sont plus lents, surtout au premier appel (chargement en mémoire).
+    delai: ${IA_DELAI:PT180S}
