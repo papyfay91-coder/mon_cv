@@ -49,23 +49,72 @@ export default function NouveauProduit({ vocalAutorise, onDemanderConsentement, 
     if (!resultat.canceled) setPhoto(resultat.assets[0]);
   };
 
+  // État réel du micro, indépendant du rafraîchissement de l'interface (évite les courses entre appui et relâché).
+  const phase = useRef<'repos' | 'demarrage' | 'enregistrement' | 'arret'>('repos');
+  const relache = useRef(false);
+  const debutEnregistrement = useRef(0);
+  const [enregistre, setEnregistre] = useState(false);
+  const [micro, setMicro] = useState<'inconnu' | 'autorise' | 'refuse'>('inconnu');
+
+  // Demande l'accès au micro à l'ouverture : la fenêtre d'iOS n'interrompt plus l'appui sur le bouton.
+  useEffect(() => {
+    if (!vocalAutorise) return;
+    AudioModule.requestRecordingPermissionsAsync()
+      .then((p) => setMicro(p.granted ? 'autorise' : 'refuse'))
+      .catch(() => setMicro('refuse'));
+  }, [vocalAutorise]);
+
   const commencerEnregistrement = async () => {
+    if (phase.current !== 'repos') return;
     setMessage(null);
-    const permission = await AudioModule.requestRecordingPermissionsAsync();
-    if (!permission.granted) return setMessage({ type: 'erreur', texte: 'Autorisez le micro dans les réglages.' });
-    vibrer();
-    await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
-    await enregistreur.prepareToRecordAsync();
-    enregistreur.record();
+    relache.current = false;
+    if (micro !== 'autorise') {
+      const permission = await AudioModule.requestRecordingPermissionsAsync();
+      setMicro(permission.granted ? 'autorise' : 'refuse');
+      setMessage(permission.granted
+        ? { type: 'info', texte: 'Micro autorisé. Maintenez le bouton et parlez.' }
+        : { type: 'erreur', texte: 'Autorisez le micro dans Réglages > Wiri-Wiri Shop (ou Expo Go).' });
+      return;
+    }
+    phase.current = 'demarrage';
+    try {
+      await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
+      await enregistreur.prepareToRecordAsync();
+      if (relache.current) { // doigt relâché pendant la préparation du micro
+        phase.current = 'repos';
+        await setAudioModeAsync({ allowsRecording: false });
+        setMessage({ type: 'info', texte: 'Gardez le doigt sur le bouton pendant que vous parlez.' });
+        return;
+      }
+      enregistreur.record();
+      debutEnregistrement.current = Date.now();
+      phase.current = 'enregistrement';
+      setEnregistre(true);
+      vibrer();
+    } catch {
+      phase.current = 'repos';
+      setMessage({ type: 'erreur', texte: 'Impossible d\'utiliser le micro. Fermez les autres applications qui l\'utilisent.' });
+    }
   };
 
   const terminerEnregistrement = async () => {
-    if (!etatEnregistreur.isRecording) return;
-    await enregistreur.stop();
-    await setAudioModeAsync({ allowsRecording: false });
+    relache.current = true;
+    if (phase.current !== 'enregistrement') return; // la préparation gère elle-même le relâché
+    phase.current = 'arret';
+    const duree = Date.now() - debutEnregistrement.current;
+    try {
+      await enregistreur.stop();
+    } finally {
+      await setAudioModeAsync({ allowsRecording: false }).catch(() => undefined);
+      setEnregistre(false);
+      phase.current = 'repos';
+    }
     vibrer();
     const uri = enregistreur.uri;
-    if (!uri) return;
+    if (duree < 800 || !uri) {
+      setMessage({ type: 'info', texte: 'Trop court : maintenez le bouton et décrivez l\'article.' });
+      return;
+    }
     setAttente('analyse');
     try {
       const resultat = await api.analyserNoteVocale(uri);
@@ -73,7 +122,8 @@ export default function NouveauProduit({ vocalAutorise, onDemanderConsentement, 
       if (resultat.nomProduit) setNom(resultat.nomProduit);
       if (resultat.prix) setPrix(String(resultat.prix));
       if (resultat.taille) setTaille(resultat.taille);
-      if (!resultat.complet) setMessage({ type: 'info', texte: 'Je n\'ai pas tout compris : complétez les champs vides.' });
+      if (!resultat.transcription) setMessage({ type: 'info', texte: 'Je n\'ai rien entendu. Parlez plus près du téléphone.' });
+      else if (!resultat.complet) setMessage({ type: 'info', texte: 'Je n\'ai pas tout compris : complétez les champs vides.' });
     } catch (e) {
       setMessage({ type: 'erreur', texte: e instanceof ErreurApi ? e.message : 'Connexion impossible. Réessayez.' });
     }
@@ -132,7 +182,7 @@ export default function NouveauProduit({ vocalAutorise, onDemanderConsentement, 
       {/* 2. Voix */}
       {vocalAutorise ? (
         <Carte style={styles.voix}>
-          <BoutonMicro enregistre={etatEnregistreur.isRecording} occupe={attente !== null}
+          <BoutonMicro enregistre={enregistre} occupe={attente !== null}
                        onDebut={commencerEnregistrement} onFin={terminerEnregistrement} />
           <View style={{ flex: 1, gap: 4 }}>
             {attente === 'analyse' ? (
@@ -140,7 +190,7 @@ export default function NouveauProduit({ vocalAutorise, onDemanderConsentement, 
                 <ActivityIndicator color={couleurs.marque} />
                 <Text style={typo.h3}>Analyse en cours…</Text>
               </View>
-            ) : etatEnregistreur.isRecording ? (
+            ) : enregistre ? (
               <>
                 <Text style={[typo.h3, { color: couleurs.enregistrement }]}>
                   Je vous écoute · {Math.round(etatEnregistreur.durationMillis / 1000)} s
